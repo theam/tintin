@@ -1,6 +1,10 @@
 module Main where
 
-import Lib
+import Options.Generic
+
+import Tintin
 
 main :: IO ()
-main = someFunc
+main = do
+  opts <- getRecord "Tintin"
+  runApp opts

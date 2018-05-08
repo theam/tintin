@@ -19,14 +19,27 @@ extra-source-files:
 # common to point users to the README.md file.
 description:         Please see the README on GitHub at <https://github.com/theam/tintin>
 
+default-extensions:
+- DeriveGeneric
+- RecordWildCards
+- OverloadedStrings
+- DataKinds
+- TypeOperators
+
 dependencies:
 - base >= 4.7 && < 5
+- text
+- optparse-generic
+- directory
+- temporary
+- process
+- inliterate
 
 library:
   source-dirs: src
 
 executables:
-  tintin-exe:
+  tintin:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
