@@ -1,69 +1,143 @@
 module Tintin where
 
-import Control.Monad
-import Options.Generic
-import GHC.Generics
-import Data.Text as Text
-import Data.Text.IO as Text
+import Universum
+import qualified Data.List.NonEmpty as NonEmpty
+
+import qualified Data.Text as Text
 import System.Directory
 import System.IO.Temp
-import Data.Monoid
 import System.Process
 
-data Options = Options
-  { outputDirectory :: Maybe Text
-  , verbose :: Bool
-  } deriving (Generic)
 
-instance ParseRecord Options
+type Logger = (Text -> IO ())
+
+
+makeLogger :: Bool -> Logger
+makeLogger shouldLog msg =
+  when shouldLog (putStrLn msg)
 
 
 newtype DocumentationDirectory = DocumentationDirectory Text
 newtype OutputDirectory        = OutputDirectory Text
+newtype TemporaryDirectory     = TemporaryDirectory Text
+newtype FrontMatter            = FrontMatter Text
+
+data MarkdownFiles = MarkdownFiles
+  { markdownFilesList :: [Text]
+  , markdownFilesDirectory :: Text
+  }
+
+data HaskellFiles = HaskellFiles
+  { haskellFilesData      :: [HaskellFile]
+  , haskellFilesDirectory :: Text
+  }
+
+data HaskellFile = HaskellFile
+  { haskellFileFrontMatter :: Text
+  , haskellFileContent     :: Text
+  , haskellFileName        :: Text
+  }
+
+data RenderedData = RenderedData
+  { renderedDataContent :: Text
+  , renderedDataFile    :: Text
+  }
 
 
-makeLogger :: Bool -> (String -> IO ())
-makeLogger shouldLog msg = do
-  when shouldLog (print msg)
-  return ()
+deleteOutputDirectoryIfExists :: OutputDirectory -> IO ()
+deleteOutputDirectoryIfExists (OutputDirectory outputDir) = do
+  outputDirExists <- doesDirectoryExist ( toString outputDir )
+  when outputDirExists (removeDirectoryRecursive $ toString outputDir)
 
 
-runApp :: Options -> IO ()
-runApp Options {..} = withSystemTempDirectory "tintin" $ \tmpdir -> do
-  let log       = makeLogger verbose
-  let outputDir = Text.unpack $ maybe ("dist/tintin/") id outputDirectory
-  outputDirExists <- doesDirectoryExist outputDir
+getMarkdownFilesFrom :: DocumentationDirectory -> IO MarkdownFiles
+getMarkdownFilesFrom ( DocumentationDirectory path ) = do
+  files <- listDirectory $ toString path
+  let markdownFiles = filter (Text.isSuffixOf ".md") $ toText <$> files
+  return MarkdownFiles
+    { markdownFilesList = markdownFiles
+    , markdownFilesDirectory = path
+    }
 
-  when outputDirExists (removeDirectoryRecursive outputDir)
 
-  currDir <- getCurrentDirectory
-  files <- listDirectory "doc"
-  let mdFiles = fmap Text.unpack $ Prelude.filter (isSuffixOf ".md") $ fmap Text.pack $ files
+convertToHaskellFiles :: TemporaryDirectory -> MarkdownFiles -> IO HaskellFiles
+convertToHaskellFiles ( TemporaryDirectory tmpdir ) MarkdownFiles {..} = do
+  haskellFiles <- makeHaskellFiles
+  return HaskellFiles
+    { haskellFilesData = haskellFiles
+    , haskellFilesDirectory = tmpdir
+    }
+ where
+  makeHaskellFiles =
+    forM markdownFilesList $ \markdownFile -> do
+      content <- readFile ( toString $ markdownFilesDirectory <> markdownFile )
+      unless ( hasFrontMatter content ) ( dieWithFrontMatterError markdownFile )
+      let [ frontMatter, source ] = splitMarkdown content
+      let filename = markdownFile `changeExtensionTo` ".hs"
+      return HaskellFile
+        { haskellFileFrontMatter = frontMatter
+        , haskellFileContent     = source
+        , haskellFileName        = filename
+        }
 
-  forM_ mdFiles $ \mdFile -> do
-    content <- Text.readFile (currDir <> "/doc/" <> mdFile )
-    unless ("---" `isPrefixOf` content) (error $ "File " <> mdFile <> " must start with a front-matter.")
-    let [ _, header, source ] = splitMarkdown content
-    let hsFile =
-          tmpdir <> "/"
-          <> ( Text.unpack $ ( fst $ breakOn "." $ Text.pack mdFile ) )
-          <> ".hs"
-    Text.appendFile hsFile "{-# OPTIONS_GHC -F -pgmF inlitpp #-}"
-    Text.appendFile hsFile source
+  hasFrontMatter content =
+    "---" `Text.isPrefixOf` content
 
-    log ("Rendering file " <> hsFile)
-    rendered <- readProcess "stack" ["runghc", hsFile, "--", "--no-inlit-wrap"] ""
-    createDirectoryIfMissing True outputDir
-    let htmlFile =
-          outputDir <> "/"
-          <> ( Text.unpack $ ( toLower $ fst $ breakOn "." $ Text.pack mdFile ) )
-          <> ".html"
-    Text.appendFile htmlFile "---"
-    Text.appendFile htmlFile header
-    Text.appendFile htmlFile "layout: page\n---\n"
-    Text.appendFile htmlFile ( Text.pack rendered )
+  dieWithFrontMatterError filename =
+    error $ "File " <> toText filename <> " must start with a front-matter."
 
-  Prelude.putStrLn ( "Website generated at " <> outputDir )
+  splitMarkdown =
+    tail . NonEmpty.fromList . Text.splitOn "---"
 
-splitMarkdown :: Text -> [Text]
-splitMarkdown = splitOn "---"
+
+changeExtensionTo :: Text -> Text -> Text
+changeExtensionTo filename newExtension =
+  fst ( Text.breakOn "." filename ) <> newExtension
+
+
+renderHaskellFiles :: HaskellFiles -> IO [RenderedData]
+renderHaskellFiles HaskellFiles {..} = forM haskellFilesData $ \HaskellFile {..} -> do
+  let filename = toString $ haskellFilesDirectory <> "/" <> haskellFileName
+  writeHaskellFile filename haskellFileContent
+  rendered <- readProcess "stack" ["runghc", filename, "--", "--no-inlit-wrap"] ""
+  let htmlFileName = haskellFileName `changeExtensionTo` ".html"
+  let header = "---" <> haskellFileFrontMatter <> "layout: page\n---\n"
+  return RenderedData
+    { renderedDataContent = header <> toText rendered
+    , renderedDataFile = Text.toLower htmlFileName
+    }
+ where
+  writeHaskellFile filename source =
+    writeFile filename ( "{-# OPTIONS_GHC -F -pgmF inlitpp #-}\n" <> source )
+
+
+writeHtmlFiles :: OutputDirectory -> [RenderedData] -> IO ()
+writeHtmlFiles (OutputDirectory outputDir) renderedData =
+  forM_ renderedData $ \RenderedData {..} -> do
+    let filename = toString $ outputDir <> "/" <> renderedDataFile
+    createDirectoryIfMissing True ( toString outputDir )
+    writeFile filename renderedDataContent
+
+
+runApp :: Logger -> OutputDirectory -> IO ()
+runApp doLog (OutputDirectory outputDir) = withSystemTempDirectory "tintin" $ \tmpdir -> do
+
+  doLog "Deleting output directory if it exists"
+  deleteOutputDirectoryIfExists (OutputDirectory outputDir)
+
+  currentDir    <- toText <$> getCurrentDirectory
+
+  doLog "Parsing Markdown files"
+  markdownFiles <- getMarkdownFilesFrom (DocumentationDirectory $ currentDir <> "/doc/")
+
+  doLog "Converting to Haskell files"
+  haskellFiles  <- convertToHaskellFiles (TemporaryDirectory $ toText tmpdir) markdownFiles
+
+  doLog "Compiling and rendering"
+  renderedHtmlFiles <- renderHaskellFiles haskellFiles
+
+  doLog "Writing to output"
+  writeHtmlFiles (OutputDirectory outputDir) renderedHtmlFiles
+
+  doLog ( "Website generated at " <> outputDir )
+
