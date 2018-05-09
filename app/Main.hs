@@ -7,7 +7,6 @@ import Options.Generic
 import Tintin (OutputDirectory(..), makeLogger, runApp)
 
 
-
 data Options = Options
   { outputDirectory :: Maybe Text
   , verbose :: Bool
@@ -19,7 +18,7 @@ instance ParseRecord Options
 
 main :: IO ()
 main = do
-  opts <- getRecord "Tintin"
+  opts <- getRecord "Tintin, the tutorial website generator"
   let outputDir = fromMaybe "dist/tintin/" (outputDirectory opts)
   let isVerbose = verbose opts
   runApp ( makeLogger isVerbose ) ( OutputDirectory outputDir )
