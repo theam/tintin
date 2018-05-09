@@ -1,5 +1,5 @@
 name:                tintin
-version:             0.2.1
+version:             0.3.0
 github:              "theam/tintin"
 license:             Apache-2.0
 author:              "The Agile Monkeys"
@@ -27,6 +27,7 @@ default-extensions:
 - TypeOperators
 - NoImplicitPrelude
 - StandaloneDeriving
+- TypeApplications
 
 dependencies:
 - base >= 4.7 && < 5
@@ -37,6 +38,9 @@ dependencies:
 - process
 - inliterate
 - universum
+- lucid
+- yaml
+- clay
 
 library:
   source-dirs: src

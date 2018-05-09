@@ -5,9 +5,11 @@ module Tintin.Files.Html
 where
 
 
-import Data.Text (toLower)
+import Data.Text (toLower, isSuffixOf)
+import Data.Yaml
 
 import Tintin.Core
+import Tintin.Html.Templating as Template
 
 
 render :: HaskellFiles -> IO [RenderedData]
@@ -16,11 +18,14 @@ render HaskellFiles {..} = forM haskellFilesData $ \HaskellFile {..} -> do
   writeHaskellFile filename haskellFileContent
   rendered <- readProcess "stack" ["runghc", filename, "--", "--no-inlit-wrap"] ""
   let htmlFileName = haskellFileName `changeExtensionTo` ".html"
-  let header = "---" <> haskellFileFrontMatter <> "layout: page\n---\n"
-  return RenderedData
-    { renderedDataContent = header <> toText rendered
-    , renderedDataFile = toLower htmlFileName
-    }
+  case decode ( encodeUtf8 @Text @ByteString haskellFileFrontMatter ) of
+    Nothing -> error "Parse error"
+    Just fm ->
+      return RenderedData
+        { renderedDataContent = toText rendered
+        , renderedDataFile = toLower htmlFileName
+        , renderedDataTitle = frontMatterTitle fm
+        }
  where
   writeHaskellFile filename source =
     writeFile filename ( "{-# OPTIONS_GHC -F -pgmF inlitpp #-}\n" <> source )
@@ -28,10 +33,13 @@ render HaskellFiles {..} = forM haskellFilesData $ \HaskellFile {..} -> do
 
 write :: OutputDirectory -> [RenderedData] -> IO ()
 write (OutputDirectory outputDir) renderedData =
-  forM_ renderedData $ \RenderedData {..} -> do
-    let filename = toString $ outputDir <> "/" <> renderedDataFile
-    createDirectoryIfMissing True ( toString outputDir )
-    writeFile filename renderedDataContent
-
-
+  forM_ renderedData $ \rd@RenderedData {..} -> do
+    let outputDirectory = outputDir <> "/pages"
+    let filename        = toString $ outputDirectory <> "/" <> renderedDataFile
+    createDirectoryIfMissing True ( toString outputDirectory )
+    let wrappedContent =
+          if "index.html" `isSuffixOf` renderedDataFile
+          then Template.wrapHome renderedData rd
+          else Template.wrapPage renderedData rd
+    writeFile filename wrappedContent
 
