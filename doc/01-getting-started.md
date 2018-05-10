@@ -1,5 +1,5 @@
 ---
-title: Getting Started with Tintin
+title: Getting Started
 ---
 
 # Requirements

@@ -12,8 +12,13 @@ Forget about creating a website, just write your tutorials using **markdown**.
 
 You can evaluate Haskell code and show the results inline:
 
+```haskell top
+addInts :: Int -> Int -> Int
+addInts x y = x + y
+```
+
 ```haskell eval
-1 + 1 :: Int
+addInts 20 22
 ```
 
 
