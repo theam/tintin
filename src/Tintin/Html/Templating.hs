@@ -69,17 +69,18 @@ wrapHome pages rd = toText . renderText $ do
     nav_ [ class_ "navbar navbar-expand-lg navbar-dark tintin-navbar tintin-bg-lightblue position-absolute"
          , style_ "bottom:0; width: 100%;"
          ] $ do
-      div_ [class_ "collapse navbar-collapse", id_ "navbarSupportedContent"] $ do
-        ul_ [class_ "navbar-nav mr-auto"] $ do
-          li_ [class_ "nav-item active"] $
-            a_ [class_ "nav-link active", href_ "/index.html"] "Home"
-          let (page:_) = filter (\x -> "index.html" /= renderedDataFile x ) pages
-          li_ [class_ "nav-item"] $
-            a_ [class_ "nav-link", href_ ( renderedDataFile page )] "Docs"
-      div_ $
-        ul_ [class_ "navbar-nav mr-sm-2"] $
-          li_ [class_ "nav-item"] $
-            a_ [class_ "nav-link", href_ "https://github.com/theam/tintin"] "View on GitHub"
+      div_ [ class_ "container" ] $ do
+        div_ [class_ "collapse navbar-collapse", id_ "navbarSupportedContent"] $ do
+          ul_ [class_ "navbar-nav mr-auto"] $ do
+            li_ [class_ "nav-item active"] $
+              a_ [class_ "nav-link active", href_ "/index.html"] "Home"
+            let (page:_) = filter (\x -> "index.html" /= renderedDataFile x ) pages
+            li_ [class_ "nav-item"] $
+              a_ [class_ "nav-link", href_ ( renderedDataFile page )] "Docs"
+        div_ $
+          ul_ [class_ "navbar-nav mr-sm-2"] $
+            li_ [class_ "nav-item"] $
+              a_ [class_ "nav-link", href_ "https://github.com/theam/tintin"] "View on GitHub"
 
   footer =
     footer_ [ class_ "tintin-bg-darkgrey tintin-fg-white"] $

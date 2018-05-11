@@ -1,6 +1,6 @@
 module Tintin.Html.Style where
 
-import Tintin.Core hiding (( & ))
+import Tintin.Core hiding (( & ), rem)
 
 import Clay
 import qualified Clay.Media as Media
@@ -104,6 +104,9 @@ style = toText . render $ do
   footer ? do
     paddingTop (px 30)
     paddingBottom (px 30)
+
+  ".container" ? do
+    maxWidth (rem 50)
 
   query Media.screen [Media.minWidth (px 768)] $ do
     "#wrapper" ? do
