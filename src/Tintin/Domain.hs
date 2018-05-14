@@ -38,6 +38,7 @@ data FrontMatter = FrontMatter
   , frontMatterLayout :: Maybe Text
   }
 
+
 instance FromJSON FrontMatter where
   parseJSON (Object v) =
     FrontMatter
