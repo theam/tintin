@@ -46,11 +46,12 @@ See: https://stackoverflow.com/q/50353294/3847023
 -}
 
 class LiftableWithCapability v where
+
   -- v must have an execution type like 'IO a'
-  type Execution v -- :: *
+  type Execution v :: *
 
   -- also, v must have a context available, to get the Capability from
-  type Context v -- :: *
+  type Context v :: *
 
   -- We provide liftCapability, that ensures that it exists in the Context of v
   -- and, after passing a function that takes the capability and executes it in the
@@ -74,7 +75,7 @@ instance LiftableWithCapability (ReaderT e IO a) where
     lift ( f capability )
 
 
--- a function that takes some parameter a and returns v also can be lifter
+-- a function that takes some parameter a and returns v also can be lifted
 instance LiftableWithCapability v => LiftableWithCapability (a -> v) where
 
   -- The execution type of the function, is just the Execution of the return type
