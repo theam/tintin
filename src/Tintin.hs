@@ -6,29 +6,40 @@ module Tintin
 where
 
 import Tintin.Core
-import Tintin.Files.Markdown as MarkdownFiles
-import Tintin.Files.Haskell as HaskellFiles
-import Tintin.Files.Html as HtmlFiles
+
+import qualified Tintin.Capabilities.Logging as Logging
+import qualified Tintin.Capabilities.Filesystem as Filesystem
+import qualified Tintin.Domain.DocumentationFile as DocumentationFile
 
 
-runApp :: Logger -> OutputDirectory -> IO ()
-runApp doLog (OutputDirectory outputDir) = withSystemTempDirectory "tintin" $ \tmpdir -> do
-  currentDir <- toText <$> getCurrentDirectory
+runApp :: ( Has Logging.Capability eff
+          , Has Filesystem.Capability eff
+          )
+       => OutputDirectory
+       -> Effectful eff ()
+runApp (OutputDirectory outputDir) = do
 
-  doLog "Deleting output directory if it exists"
-  deleteOutputDirectoryIfExists (OutputDirectory outputDir)
+  Logging.log "Cleaning output directory if it exists"
+  Filesystem.deleteIfExists (Filesystem.Path outputDir)
 
-  doLog "Parsing Markdown files"
-  markdownFiles <- MarkdownFiles.getFrom (DocumentationDirectory $ currentDir <> "/doc/")
+  Logging.log "Reading documentation files"
+  Filesystem.Path currentDir <- Filesystem.currentDirectory
+  filenames <- Filesystem.Path (currentDir <> "/doc")
+               |>  Filesystem.list
+               |$> Filesystem.getFilenamesWith (Filesystem.Extension ".md")
 
-  doLog "Converting to Haskell files"
-  haskellFiles  <- HaskellFiles.convertMarkdown (TemporaryDirectory $ toText tmpdir) markdownFiles
+  -- FIXME
+  ( errors, docFiles) <-  filenames
+                          |>  mapM readAndParse
+                          |$> map DocumentationFile.new
+                          |$> partitionEithers
 
-  doLog "Compiling and rendering"
-  renderedHtmlFiles <- HtmlFiles.render haskellFiles
+  unless (null errors) $
+    errors
+    |> map DocumentationFile.errorText
+    |> mapM_ Logging.log
+    |> const (error "Parse errors found. Exiting...")
 
-  doLog "Writing to output"
-  HtmlFiles.write (OutputDirectory outputDir) renderedHtmlFiles
-
-  doLog ( "Website generated at " <> outputDir )
+  -- TODO: Parse docFiles and then, compile and render them
+  putTextLn "FIX ME"
 

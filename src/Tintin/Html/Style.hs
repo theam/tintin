@@ -1,6 +1,6 @@
 module Tintin.Html.Style where
 
-import Tintin.Core hiding (( & ), rem)
+import Tintin.Core hiding (( & ), rem, (|>))
 
 import Clay
 import qualified Clay.Media as Media

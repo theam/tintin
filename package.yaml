@@ -28,6 +28,11 @@ default-extensions:
 - NoImplicitPrelude
 - StandaloneDeriving
 - TypeApplications
+- KindSignatures
+- FlexibleContexts
+- FlexibleInstances
+- MultiParamTypeClasses
+- TypeFamilies
 
 dependencies:
 - base >= 4.7 && < 5
@@ -41,6 +46,9 @@ dependencies:
 - lucid
 - yaml
 - clay
+- data-has
+- cheapskate
+- frontmatter
 
 library:
   source-dirs: src
