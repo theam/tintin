@@ -1,7 +1,5 @@
 module Tintin
   ( runApp
-  , OutputDirectory(..)
-  , makeLogger
   )
 where
 
@@ -24,22 +22,39 @@ runApp (OutputDirectory outputDir) = do
 
   Logging.log "Reading documentation files"
   Filesystem.Path currentDir <- Filesystem.currentDirectory
-  filenames <- Filesystem.Path (currentDir <> "/doc")
-               |>  Filesystem.list
-               |$> Filesystem.getFilenamesWith (Filesystem.Extension ".md")
+  let DocumentationDirectory docs = DocumentationDirectory (currentDir <> "/doc")
+  filenames <- Filesystem.list (Filesystem.Path docs)
+               |$> Filesystem.getPathsWith (Filesystem.Extension ".md")
 
   -- FIXME
   ( errors, docFiles) <-  filenames
-                          |>  mapM readAndParse
-                          |$> map DocumentationFile.new
+                          |>  mapM (readAndParse $ DocumentationDirectory docs)
                           |$> partitionEithers
 
-  unless (null errors) $
-    errors
-    |> map DocumentationFile.errorText
-    |> mapM_ Logging.log
-    |> const (error "Parse errors found. Exiting...")
+  unless (null errors) (showErrorsAndDie errors)
 
   -- TODO: Parse docFiles and then, compile and render them
   putTextLn "FIX ME"
+
+
+readAndParse :: ( Has Logging.Capability eff
+                , Has Filesystem.Capability eff
+                )
+             => DocumentationDirectory
+             -> Filesystem.Path
+             -> Effectful eff (Either DocumentationFile.ParseError DocumentationFile.Value)
+readAndParse ( DocumentationDirectory d ) ( Filesystem.Path f ) = do
+  contents <- Filesystem.readFile ( Filesystem.Path $ d <> "/" <> f)
+  return $ DocumentationFile.new (DocumentationFile.Filename f) contents
+
+
+showErrorsAndDie :: Has Logging.Capability eff
+                 => [DocumentationFile.ParseError]
+                 -> Effectful eff ()
+showErrorsAndDie errors = do
+    errors
+     |> map DocumentationFile.errorText
+     |> mapM_ Logging.log
+    error "Parse errors found. Exiting."
+
 

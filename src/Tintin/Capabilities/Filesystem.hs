@@ -2,14 +2,13 @@ module Tintin.Capabilities.Filesystem
   ( Capability
   , Path(..)
   , Extension(..)
-  , Filename(..)
 
   , local
   , deleteIfExists
   , list
   , currentDirectory
   , readFile
-  , getFilenamesWith
+  , getPathsWith
   )
 where
 
@@ -22,7 +21,6 @@ import qualified Data.Text as Text
 
 newtype Path      = Path Text
 newtype Extension = Extension Text
-newtype Filename  = Filename Text
 
 
 data Capability = Capability
@@ -77,6 +75,6 @@ readFile :: Has Capability eff
 readFile = liftCapability _readFile
 
 
-getFilenamesWith :: Extension -> [Filename] -> [Filename]
-getFilenamesWith (Extension e) =
-  filter (\(Filename fn) -> fn `Text.isSuffixOf` e)
+getPathsWith :: Extension -> [Path] -> [Path]
+getPathsWith (Extension e) =
+  filter (\(Path fn) -> fn `Text.isSuffixOf` e)

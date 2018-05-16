@@ -2,6 +2,7 @@ module Tintin.Capabilities.Logging
   ( Capability
   , log
   , stdOut
+  , mute
   )
 where
 
@@ -36,4 +37,11 @@ log = liftCapability _log
 stdOut :: Capability
 stdOut = Capability
   { _log = putTextLn
+  }
+
+
+-- | Creates a logger that does literally nothing
+mute :: Capability
+mute = Capability
+  { _log = return . const ()
   }

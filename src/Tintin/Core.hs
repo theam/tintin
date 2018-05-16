@@ -7,6 +7,8 @@ module Tintin.Core
   , (|>)
   , (|$>)
   , (|>>)
+
+  , runEffects
   )
 where
 
@@ -22,6 +24,11 @@ import Tintin.Domain as Exported
 
 type Effectful context result =
   ReaderT context IO result
+
+runEffects :: Effectful context result
+           -> context
+           -> IO result
+runEffects = runReaderT
 
 type Pure context result =
   Reader context result
