@@ -15,26 +15,61 @@ runApp :: ( Has Logging.Capability eff
           )
        => OutputDirectory
        -> Effectful eff ()
-runApp (OutputDirectory outputDir) = do
+runApp outputDirectory = do
+  cleanUp outputDirectory
+  filenames <- getDocumentationFilenames
+  docFiles  <- parseDocs filenames
 
-  Logging.log "Cleaning output directory if it exists"
-  Filesystem.deleteIfExists (Filesystem.Path outputDir)
-
-  Logging.log "Reading documentation files"
-  Filesystem.Path currentDir <- Filesystem.currentDirectory
-  let DocumentationDirectory docs = DocumentationDirectory (currentDir <> "/doc")
-  filenames <- Filesystem.list (Filesystem.Path docs)
-               |$> Filesystem.getPathsWith (Filesystem.Extension ".md")
-
-  -- FIXME
-  ( errors, docFiles) <-  filenames
-                          |>  mapM (readAndParse $ DocumentationDirectory docs)
-                          |$> partitionEithers
-
-  unless (null errors) (showErrorsAndDie errors)
-
-  -- TODO: Parse docFiles and then, compile and render them
+  -- TODO: Compile and render docFiles
   putTextLn "FIX ME"
+
+
+
+cleanUp :: ( Has Logging.Capability eff
+           , Has Filesystem.Capability eff
+           )
+        => OutputDirectory
+        -> Effectful eff ()
+cleanUp (OutputDirectory p) = do
+  Logging.log "Cleaning output directory"
+  Filesystem.deleteIfExists (Filesystem.Path p)
+
+
+
+getDocumentationFilenames :: ( Has Logging.Capability eff
+                             , Has Filesystem.Capability eff
+                             )
+                          => Effectful eff [Filesystem.Path]
+getDocumentationFilenames = do
+  Logging.log "Reading documentation files"
+  DocumentationDirectory d <- getDocumentationDirectory
+  Filesystem.Path d
+   |>  Filesystem.list
+   |$> Filesystem.getPathsWith (Filesystem.Extension ".md")
+
+
+
+getDocumentationDirectory :: Has Filesystem.Capability eff
+                          => Effectful eff DocumentationDirectory
+getDocumentationDirectory = do
+  Filesystem.Path currentDir <- Filesystem.currentDirectory
+  return ( DocumentationDirectory $ currentDir <> "/doc" )
+
+
+
+parseDocs :: ( Has Logging.Capability eff
+             , Has Filesystem.Capability eff
+             )
+          => [Filesystem.Path]
+          -> Effectful eff [DocumentationFile.Value]
+parseDocs filenames = do
+  docDir <- getDocumentationDirectory
+  (errors, docFiles) <- filenames
+                        |>  mapM (readAndParse docDir)
+                        |$> partitionEithers
+  unless (null errors) (showErrorsAndDie errors)
+  return docFiles
+
 
 
 readAndParse :: ( Has Logging.Capability eff
@@ -46,6 +81,7 @@ readAndParse :: ( Has Logging.Capability eff
 readAndParse ( DocumentationDirectory d ) ( Filesystem.Path f ) = do
   contents <- Filesystem.readFile ( Filesystem.Path $ d <> "/" <> f)
   return $ DocumentationFile.new (DocumentationFile.Filename f) contents
+
 
 
 showErrorsAndDie :: Has Logging.Capability eff
