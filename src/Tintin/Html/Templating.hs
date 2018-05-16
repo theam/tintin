@@ -112,7 +112,7 @@ tintinHeader (Project.Info {..}) (Project.Page {..}) =
           , href_ "https://cdn.rawgit.com/michalsnik/aos/2.1.1/dist/aos.css"
           ]
     link_ [ rel_ "stylesheet"
-          , href_ "https://fonts.googleapis.com/css?family=Karla|Montserrat:700"
+          , href_ "https://fonts.googleapis.com/css?family=IBM+Plex+Sans|Montserrat:500"
           ]
     link_ [ rel_ "stylesheet"
           , href_ "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"

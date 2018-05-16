@@ -9,11 +9,23 @@ import Clay.Selector
 style :: Text
 style = toText . render $ do
   body ? do
-    fontFamily ["Karla"] [ sansSerif ]
+    fontFamily ["IBM Plex Sans"] [ sansSerif ]
+    fontSize (em 1)
     overflowX hidden
 
   forM [h1, h2, h3] $ \x -> x ? do
-    fontFamily  ["Montserrat" ] [ sansSerif ]
+    fontFamily ["Montserrat" ] [ sansSerif ]
+    fontWeight bold
+
+  h1 ? do
+    fontSize (em 2.441)
+
+  h2 ? do
+    fontSize (em 1.953)
+
+  h3 ? do
+    fontSize (em 1.563)
+
 
   a ? do
     let ( ( _, colorValue ) : _ ) = Tintin.Core.filter (\x -> fst x == "lightblue") colorNames
