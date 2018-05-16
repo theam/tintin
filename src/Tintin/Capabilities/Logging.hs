@@ -1,6 +1,9 @@
 module Tintin.Capabilities.Logging
   ( Capability
   , log
+  , err
+  , debug
+
   , stdOut
   , mute
   )
@@ -21,8 +24,10 @@ foo = do
   ...
 @
 -}
-newtype Capability = Capability
-  { _log :: Text -> IO ()
+data Capability = Capability
+  { _log   :: Text -> IO ()
+  , _err   :: Text -> IO ()
+  , _debug :: Text -> IO ()
   }
 
 
@@ -33,10 +38,26 @@ log :: Has Capability e
 log = liftCapability _log
 
 
+-- | Logs an error message using the available logger
+err :: Has Capability e
+    => Text
+    -> Effectful e ()
+err = liftCapability _err
+
+
+-- | Logs a debug message using the available logger
+debug :: Has Capability e
+      => Text
+      -> Effectful e ()
+debug = liftCapability _debug
+
+
 -- | Creates a logger that just prints things to STDOUT
 stdOut :: Capability
 stdOut = Capability
-  { _log = putTextLn
+  { _log   = putTextLn
+  , _err   = putTextLn . ("[ERROR] - " <>)
+  , _debug = putTextLn . ("[DEBUG] - " <>)
   }
 
 
@@ -44,4 +65,6 @@ stdOut = Capability
 mute :: Capability
 mute = Capability
   { _log = return . const ()
+  , _debug = return . const ()
+  , _err = return . const ()
   }

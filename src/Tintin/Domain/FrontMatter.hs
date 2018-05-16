@@ -6,10 +6,10 @@ import Data.Yaml
 
 
 data FrontMatter = FrontMatter
-  { frontMatterTitle :: Text
-  , frontMatterSubitle :: Maybe Text
-  , frontMatterLayout :: Maybe Text
-  }
+  { title :: Text
+  , subtitle :: Maybe Text
+  , layout :: Maybe Text
+  } deriving Show
 
 
 instance FromJSON FrontMatter where

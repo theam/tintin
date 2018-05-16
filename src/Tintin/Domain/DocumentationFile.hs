@@ -9,25 +9,28 @@ import Tintin.Domain.FrontMatter as FrontMatter
 
 
 newtype Filename   = Filename Text
-newtype ParseError = ParseError { errorText :: Text }
+newtype ParseError = ParseError Text deriving Show
 
 data Value = Value
-  { filename    :: Filename
-  , fileContent :: Text
+  { filename    :: Text
+  , content     :: Text
   , frontMatter :: FrontMatter
-  }
+  } deriving Show
 
 
 new :: Filename -> Text -> Either ParseError Value
 new (Filename filename) rawText =
   case parse rawText of
     FMParser.Fail _ _ err ->
-      Left (ParseError $ "Parse error on " <> filename <> ", error found: " <> toText err)
+      Left ( ParseError $ "Parse error on "
+             <> filename
+             <> " no front matter found."
+           )
 
     FMParser.Done source frontMatter ->
       Right $ Value
-        { filename    = Filename filename
-        , fileContent = decodeUtf8 @Text @ByteString source
+        { filename    = filename
+        , content     = decodeUtf8 @Text @ByteString source
         , frontMatter = frontMatter
         }
  where

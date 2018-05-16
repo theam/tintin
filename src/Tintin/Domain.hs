@@ -8,6 +8,7 @@ newtype OutputDirectory        = OutputDirectory Text
 newtype TemporaryDirectory     = TemporaryDirectory Text
 
 
+
 data MarkdownFiles = MarkdownFiles
   { markdownFilesList      :: [Text]
   , markdownFilesDirectory :: Text

@@ -8,18 +8,20 @@ module Tintin.Capabilities.Filesystem
   , list
   , currentDirectory
   , readFile
+  , makeDirectory
+  , writeFile
   , getPathsWith
   )
 where
 
-import Tintin.Core hiding (list, local, readFile)
+import Tintin.Core hiding (list, local, readFile, writeFile)
 import qualified Tintin.Core as Core
 import Tintin.Capabilities
 
 import qualified Data.Text as Text
 
 
-newtype Path      = Path Text
+newtype Path      = Path Text deriving ( Show, Ord, Eq )
 newtype Extension = Extension Text
 
 
@@ -28,6 +30,8 @@ data Capability = Capability
   , _list             :: Path -> IO [Path]
   , _currentDirectory :: IO Path
   , _readFile         :: Path -> IO Text
+  , _makeDirectory    :: Path -> IO ()
+  , _writeFile        :: Path -> Text -> IO ()
   }
 
 
@@ -42,7 +46,7 @@ local =
 
   _list (Path p) = do
     files <- listDirectory (toString p)
-    return (Path . toText . sort <$> files)
+    return $ sort (Path . toText <$> files)
 
   _currentDirectory =
     getCurrentDirectory
@@ -50,6 +54,10 @@ local =
     |$> Path
 
   _readFile (Path p) = Core.readFile (toString p)
+
+  _makeDirectory (Path p) = createDirectoryIfMissing True (toString p)
+
+  _writeFile (Path p) = Core.writeFile (toString p)
 
 
 deleteIfExists :: Has Capability eff
@@ -75,6 +83,19 @@ readFile :: Has Capability eff
 readFile = liftCapability _readFile
 
 
+makeDirectory :: Has Capability eff
+              => Path
+              -> Effectful eff ()
+makeDirectory = liftCapability _makeDirectory
+
+
+writeFile :: Has Capability eff
+          => Path
+          -> Text
+          -> Effectful eff ()
+writeFile = liftCapability _writeFile
+
+
 getPathsWith :: Extension -> [Path] -> [Path]
 getPathsWith (Extension e) =
-  filter (\(Path fn) -> fn `Text.isSuffixOf` e)
+  filter (\(Path fn) -> e `Text.isSuffixOf` fn)

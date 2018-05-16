@@ -4,11 +4,19 @@ import Lucid
 
 import Tintin.Core
 import qualified Tintin.Html.Style as Style
+import qualified Tintin.Domain.Project as Project
 
 
-wrapPage :: [RenderedData] -> RenderedData -> Text
-wrapPage pages rd = toText . renderText $ do
-  tintinHeader $ renderedDataTitle rd
+wrap :: Project.Info -> Project.Page -> Text
+wrap info page =
+  if (Project.filename page) == "index.html"
+  then wrapHome info page
+  else wrapPage info page
+
+
+wrapPage :: Project.Info -> Project.Page -> Text
+wrapPage info page = toText . renderText $ do
+  tintinHeader info page
   body_ [class_ "tintin-fg-black tintin-bg-white"] $ do
     section_ [ id_ "content"] $ do
       div_ [id_ "wrapper", class_ "toggled"] $ do
@@ -16,14 +24,14 @@ wrapPage pages rd = toText . renderText $ do
           ul_ [ class_ "sidebar-nav"] $ do
             li_ [ class_ "sidebar-brand tintin-bg-blue"] $ do
               a_ [href_ "index.html", class_ "tintin-fg-white"] "Tintin"
-            forM (filter (\x -> "index.html" /= renderedDataFile x ) pages ) $ \page -> do
+            forM (filter (\p -> "index.html" /= Project.filename p ) (Project.pages info) ) $ \p -> do
               li_ $ do
                 let classes =
-                      if renderedDataTitle page == renderedDataTitle rd
+                      if Project.title page == Project.title p
                       then "tintin-fg-white"
                       else "tintin-fg-blue"
-                a_ [href_ $ renderedDataFile page, class_ classes] $ do
-                  ( toHtml $ renderedDataTitle page )
+                a_ [href_ $ Project.filename p, class_ classes] $ do
+                  ( toHtml $ Project.title p )
 
         nav_ [class_ "navbar navbar-expand-lg tintin-fg-white tintin-bg-grey"] $ do
           a_ [id_ "menu-toggle", href_ "#menu-toggle"] $
@@ -32,13 +40,13 @@ wrapPage pages rd = toText . renderText $ do
         div_ [id_ "page-content-wrapper"] $ do
           div_ [class_ "container"] $ do
             div_ [class_ "col"] $
-              toHtmlRaw $ renderedDataContent rd
+              toHtmlRaw $ Project.content page
       tintinPostInit
 
 
-wrapHome :: [RenderedData] -> RenderedData -> Text
-wrapHome pages rd = toText . renderText $ do
-  tintinHeader ( renderedDataTitle rd )
+wrapHome :: Project.Info -> Project.Page -> Text
+wrapHome info page = toText . renderText $ do
+  tintinHeader info page
   body_ [class_ "tintin-fg-black tintin-bg-white"] $ do
     navbar
 
@@ -47,8 +55,8 @@ wrapHome pages rd = toText . renderText $ do
         div_ [class_ "container h-100"] $ do
           div_ [class_ "row h-100 align-items-center"] $ do
             div_ [class_ "col"] $ do
-              h1_ [class_ "cover-heading"] $ toHtml ( renderedDataTitle rd )
-              h2_ "Document your package, before asking Haddock"
+              h1_ [class_ "cover-heading"] $ toHtml (Project.name info)
+              h2_ (toHtml $ Project.synopsis info)
             div_ [class_ "col"] $ do
               div_ [class_ "d-flex justify-content-center"] $
                 pre_ [style_ "font-size: 900%; color: #de935f;"] ")``)"
@@ -60,8 +68,8 @@ wrapHome pages rd = toText . renderText $ do
       div_ [class_ "container"] $ do
         div_ [class_ "content"
              ] $
-          div_ [class_ "rawr"] $ do
-            toHtmlRaw $ renderedDataContent rd
+          div_ [] $ do
+            toHtmlRaw $ Project.content page
     footer
     tintinPostInit
  where
@@ -74,9 +82,9 @@ wrapHome pages rd = toText . renderText $ do
           ul_ [class_ "navbar-nav mr-auto"] $ do
             li_ [class_ "nav-item active"] $
               a_ [class_ "nav-link active", href_ "/index.html"] "Home"
-            let (page:_) = filter (\x -> "index.html" /= renderedDataFile x ) pages
+            let (page:_) = filter (\x -> "index.html" /= Project.filename x ) (Project.pages info)
             li_ [class_ "nav-item"] $
-              a_ [class_ "nav-link", href_ ( renderedDataFile page )] "Docs"
+              a_ [class_ "nav-link", href_ (Project.filename page)] "Docs"
         div_ $
           ul_ [class_ "navbar-nav mr-sm-2"] $
             li_ [class_ "nav-item"] $
@@ -89,17 +97,17 @@ wrapHome pages rd = toText . renderText $ do
           div_ [class_ "col"] $
             p_ [class_ "tintin-fg-lightgrey"] $ do
               "Developed by "
-              a_ [href_ "github.com/theam"] "theam"
+              a_ [href_ $ "https://github.com/" <> Project.githubAuthor info] (toHtml $ Project.githubAuthor info)
           div_ [class_ "col"] $
             p_ [class_ "tintin-fg-lightgrey float-right"] $ do
               "Built with "
-              a_ [href_ "theam.github.io/tintin"] "tintin"
+              a_ [href_ "https://theam.github.io/tintin"] "tintin"
 
 
-tintinHeader :: Text -> Html ()
-tintinHeader pageTitle =
+tintinHeader :: Project.Info -> Project.Page -> Html ()
+tintinHeader (Project.Info {..}) (Project.Page {..}) =
   head_ $ do
-    title_ ( toHtml pageTitle )
+    title_ ( toHtml $ name <> " - " <> title )
     link_ [ rel_ "stylesheet"
           , href_ "https://cdn.rawgit.com/michalsnik/aos/2.1.1/dist/aos.css"
           ]
