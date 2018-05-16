@@ -2,7 +2,6 @@ module Tintin.Domain.DocumentationFile where
 
 import Tintin.Core
 
-import qualified Data.Text as Text
 import qualified Data.Frontmatter as FMParser
 
 import Tintin.Domain.FrontMatter as FrontMatter

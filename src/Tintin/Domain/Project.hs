@@ -13,6 +13,7 @@ data Color
   | LightOrange
   | Red
   | Grey
+  deriving Show
 
 
 data Page = Page
@@ -28,6 +29,7 @@ data Info = Info
   , color        :: Color
   , githubLink   :: Text
   , githubAuthor :: Text
+  , logoUrl      :: Maybe Text
   , pages        :: [Page]
   }
 

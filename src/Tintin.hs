@@ -13,8 +13,6 @@ import qualified Tintin.Domain.HtmlFile as HtmlFile
 import qualified Tintin.Domain.Project as Project
 import qualified Tintin.Html.Templating as Templating
 
-import qualified Data.Text as Text
-
 
 runApp :: ( Has Logging.Capability eff
           , Has Filesystem.Capability eff
@@ -136,6 +134,7 @@ writeOutput (OutputDirectory od) htmlFiles = do
         , githubLink = "https://github.com/theam/tintin"
         , githubAuthor = "theam"
         , pages = pages
+        , logoUrl = Just "../../../assets/logo.svg"
         }
   forM_ pages $ \page -> do
     let newContent = Templating.wrap info page

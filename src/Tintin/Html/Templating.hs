@@ -6,6 +6,8 @@ import Tintin.Core
 import qualified Tintin.Html.Style as Style
 import qualified Tintin.Domain.Project as Project
 
+import qualified Data.Text as Text
+
 
 wrap :: Project.Info -> Project.Page -> Text
 wrap info page =
@@ -20,20 +22,24 @@ wrapPage info page = toText . renderText $ do
   body_ [class_ "tintin-fg-black tintin-bg-white"] $ do
     section_ [ id_ "content"] $ do
       div_ [id_ "wrapper", class_ "toggled"] $ do
-        div_ [id_ "sidebar-wrapper", class_ "h-100 tintin-bg-lightblue"] $ do
+        div_ [id_ "sidebar-wrapper", class_ $ "h-100 tintin-bg-" <> bgColorOf info] $ do
+          div_ [ class_ "h-100 tintin-bg-70"] ( p_ "" )
           ul_ [ class_ "sidebar-nav"] $ do
-            li_ [ class_ "sidebar-brand tintin-bg-blue"] $ do
-              a_ [href_ "index.html", class_ "tintin-fg-white"] "Tintin"
-            forM (filter (\p -> "index.html" /= Project.filename p ) (Project.pages info) ) $ \p -> do
+            li_ [ class_ $ "sidebar-brand tintin-bg-" <> bgColorOf info] $ do
+              a_ [href_ "index.html", class_ "tintin-fg-white"] $ do
+                case Project.logoUrl info of
+                  Nothing -> toHtml $ Project.name info
+                  Just url -> img_ [src_ url]
+            forM_ (filter (\p -> "index.html" /= Project.filename p ) (Project.pages info) ) $ \p -> do
               li_ $ do
                 let classes =
                       if Project.title page == Project.title p
-                      then "tintin-fg-white"
-                      else "tintin-fg-blue"
+                      then "tintin-fg-active"
+                      else "tintin-fg-disabled"
                 a_ [href_ $ Project.filename p, class_ classes] $ do
                   ( toHtml $ Project.title p )
 
-        nav_ [class_ "navbar navbar-expand-lg tintin-fg-white tintin-bg-grey"] $ do
+        nav_ [class_ "navbar navbar-expand-lg tintin-fg-white tintin-bg-darkgrey"] $ do
           a_ [id_ "menu-toggle", href_ "#menu-toggle"] $
             img_ [ src_ "https://png.icons8.com/material/49/ffffff/menu.png" ]
 
@@ -48,18 +54,22 @@ wrapHome :: Project.Info -> Project.Page -> Text
 wrapHome info page = toText . renderText $ do
   tintinHeader info page
   body_ [class_ "tintin-fg-black tintin-bg-white"] $ do
-    navbar
 
-    div_ [class_ "cover-container d-flex h-100 p-3 mx-auto flex-column tintin-bg-blue tintin-fg-white"] $ do
-      main_ [role_ "main", class_ "masthead mb-auto h-100"] $ do
-        div_ [class_ "container h-100"] $ do
-          div_ [class_ "row h-100 align-items-center"] $ do
-            div_ [class_ "col"] $ do
-              h1_ [class_ "cover-heading"] $ toHtml (Project.name info)
-              h2_ (toHtml $ Project.synopsis info)
-            div_ [class_ "col"] $ do
-              div_ [class_ "d-flex justify-content-center"] $
-                pre_ [style_ "font-size: 900%; color: #de935f;"] ")``)"
+    div_ [class_ $ "tintin-navigation tintin-bg-" <> bgColorOf info] $ do
+      div_ [class_ "cover-container d-flex p-3 mx-auto flex-column tintin-fg-white"] $ do
+        a_ [href_ "https://theam.github.io/tintin"] $ do
+          img_ [ src_ "../../../assets/logo.svg", class_ "watermark" ]
+        main_ [role_ "main", class_ "masthead mb-auto"] $ do
+          div_ [class_ "container"] $ do
+            div_ [class_ "row align-items-center"] $ do
+              div_ [class_ "col", id_ "header-container"] $ do
+                case Project.logoUrl info of
+                  Just url -> img_ [ src_ url, class_ "cover-heading" ]
+                  Nothing -> h1_ [class_ "cover-heading"] $ toHtml (Project.name info)
+                p_ [class_ "cover-heading-subtitle"] (toHtml $ Project.synopsis info)
+
+      navbar
+
     section_ [ id_ "content"
              , data_ "aos" "fade-up"
              , data_ "aos-duration" "800"
@@ -74,8 +84,8 @@ wrapHome info page = toText . renderText $ do
     tintinPostInit
  where
   navbar =
-    nav_ [ class_ "navbar navbar-expand-lg navbar-dark tintin-navbar tintin-bg-lightblue position-absolute"
-         , style_ "bottom:0; width: 100%;"
+    nav_ [ class_ "navbar navbar-expand-lg navbar-dark tintin-navbar"
+         , style_ "width: 100%;"
          ] $ do
       div_ [ class_ "container" ] $ do
         div_ [class_ "collapse navbar-collapse", id_ "navbarSupportedContent"] $ do
@@ -120,7 +130,11 @@ tintinHeader (Project.Info {..}) (Project.Page {..}) =
     link_ [ rel_ "stylesheet"
           , href_ "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow-night.min.css"
           ]
+    link_ [ rel_ "shortcut icon"
+          , href_ "https://github.com/theam/tintin/raw/design-fixes/assets/favicon-grey.ico"
+          ]
     style_ Style.style
+
 
 tintinPostInit :: Html ()
 tintinPostInit = do
@@ -138,4 +152,10 @@ tintinPostInit = do
         \$(\"#wrapper\").toggleClass(\"toggled\");\
     \})});"
 
+
+bgColorOf :: Project.Info -> Text
+bgColorOf info =
+  Project.color info
+  |> show
+  |> Text.toLower
 
