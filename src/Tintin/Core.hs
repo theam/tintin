@@ -1,15 +1,20 @@
 module Tintin.Core
   ( module Exported
-  , Logger
-  , makeLogger
-  , deleteOutputDirectoryIfExists
-  , changeExtensionTo
+
+  , Effectful
+  , Pure
+
+  , (|>)
+  , (|$>)
+  , (|>>)
+
+  , runEffects
   )
 where
 
-import Universum as Exported
+import Universum as Exported hiding (log)
 
-import qualified Data.Text as Text
+import Data.Has as Exported
 import System.Directory as Exported
 import System.IO.Temp as Exported
 import System.Process as Exported
@@ -17,20 +22,24 @@ import System.Process as Exported
 import Tintin.Domain as Exported
 
 
-type Logger = (Text -> IO ())
 
-makeLogger :: Bool -> Logger
-makeLogger shouldLog msg =
-  when shouldLog (putStrLn msg)
+type Effectful context result =
+  ReaderT context IO result
+
+runEffects :: Effectful context result
+           -> context
+           -> IO result
+runEffects = runReaderT
+
+type Pure context result =
+  Reader context result
 
 
-deleteOutputDirectoryIfExists :: OutputDirectory -> IO ()
-deleteOutputDirectoryIfExists (OutputDirectory outputDir) = do
-  outputDirExists <- doesDirectoryExist ( toString outputDir )
-  when outputDirExists (removeDirectoryRecursive $ toString outputDir)
+(|>) :: a -> (a -> b) -> b
+(|>) = (&)
 
+(|$>) :: Functor f => f a -> (a -> b) -> f b
+(|$>) = (<&>)
 
-changeExtensionTo :: Text -> Text -> Text
-changeExtensionTo filename newExtension =
-  fst ( Text.breakOn "." filename ) <> newExtension
-
+(|>>) :: Monad m => m a -> (a -> m b) -> m b
+(|>>) = (>>=)
