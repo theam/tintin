@@ -1,5 +1,5 @@
 name:                tintin
-version:             0.5.0
+version:             1.0.0
 github:              "theam/tintin"
 license:             Apache-2.0
 author:              "The Agile Monkeys"
@@ -35,23 +35,24 @@ default-extensions:
 - TypeFamilies
 
 dependencies:
-- base >= 4.7 && < 5
-- text
-- optparse-generic
-- directory
-- temporary
-- process
-- inliterate
-- universum
-- lucid
-- yaml
-- clay
-- data-has
-- cheapskate
-- frontmatter
+  - base >= 4.7 && < 5
 
 library:
   source-dirs: src
+  dependencies:
+  - text
+  - directory
+  - temporary
+  - process
+  - inliterate
+  - universum
+  - lucid
+  - yaml
+  - clay
+  - data-has
+  - frontmatter
+
+
 
 executables:
   tintin:
@@ -63,6 +64,8 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - tintin
+    - universum
+    - optparse-generic
 
 tests:
   tintin-test:

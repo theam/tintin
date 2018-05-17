@@ -1,2 +1,4 @@
+import Tintin.Core
+
 main :: IO ()
-main = putStrLn "Test suite not yet implemented"
+main = putTextLn "Test suite not yet implemented"
