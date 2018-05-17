@@ -13,6 +13,11 @@ import qualified Tintin.Domain.HtmlFile as HtmlFile
 import qualified Tintin.Domain.Project as Project
 import qualified Tintin.Html.Templating as Templating
 
+import qualified Data.Text as Text
+import Universum.Unsafe (fromJust)
+import qualified Universum.Debug as Debug
+import Text.Read (read)
+
 
 runApp :: ( Has Logging.Capability eff
           , Has Filesystem.Capability eff
@@ -97,7 +102,7 @@ showErrorsAndDie :: ( Has Logging.Capability eff
 showErrorsAndDie errors = do
     errors
      |> mapM_ (Logging.err . show)
-    error "Parse errors found. Exiting."
+    error "Errors found. Exiting."
 
 
 render :: ( Has Logging.Capability eff
@@ -123,20 +128,92 @@ writeOutput :: ( Has Logging.Capability eff
             -> [HtmlFile.Value]
             -> Effectful eff ()
 writeOutput (OutputDirectory od) htmlFiles = do
-  Logging.debug "Writing HTML output"
   Filesystem.makeDirectory (Filesystem.Path od)
   let pages = htmlFiles
               |> map (\HtmlFile.Value {..} -> Project.Page title content filename)
-  let info = Project.Info
-        { name = "tintin"
-        , synopsis = "some testing"
-        , color = Project.Blue
-        , githubLink = "https://github.com/theam/tintin"
-        , githubAuthor = "theam"
-        , pages = pages
-        , logoUrl = Just "../../../assets/logo.svg"
-        }
+  info <- readInfo pages
+  Logging.debug "Writing HTML output"
   forM_ pages $ \page -> do
     let newContent = Templating.wrap info page
     Filesystem.writeFile (Filesystem.Path $ od <> Project.filename page) newContent
+
+
+readInfo :: ( Has Logging.Capability eff
+            , Has Filesystem.Capability eff
+            )
+         => [Project.Page]
+         -> Effectful eff Project.Info
+readInfo pages = do
+  Filesystem.Path currentDir <- Filesystem.currentDirectory
+  files <- Filesystem.list (Filesystem.Path currentDir)
+  let packageYamlFile = find isPackageYaml files
+  let cabalFile       = find isCabalFile files
+  case packageYamlFile <|> cabalFile of
+    Nothing -> do
+      showErrorsAndDie ["No package.yaml or *.cabal file found."]
+      error ""
+
+    Just p -> do
+      let tintinPath = Filesystem.Path $ currentDir <> "/.tintin.yml"
+      Logging.debug "Reading project info"
+      projectInfoFile <- Filesystem.readFile p
+      tintinExists    <- Filesystem.doesExist tintinPath
+      unless tintinExists $
+        Filesystem.writeFile tintinPath "color: blue\n"
+      tintinFile <- Filesystem.readFile tintinPath
+      let
+        projectName     = projectInfoFile |> getFieldValue "name"
+        projectSynopsis = projectInfoFile |> getFieldValue "synopsis"
+        projectGithub   = (projectInfoFile |> getFieldValue "github")
+                          <|> (projectInfoFile |> getFieldValue "location")
+        projectAuthor   = projectGithub |$> getAuthor
+        tintinColor     = tintinFile |> getFieldValue "color"
+        tintinLogo      = tintinFile |> getFieldValue "logo"
+      when (isNothing projectName) (showErrorsAndDie ["Project must have a name. Please set it in package.yaml or *.cabal."])
+      when (isNothing projectSynopsis) (showErrorsAndDie ["Project must have a synopsis. Please set it in package.yaml or *.cabal."])
+      when (isNothing projectGithub) (showErrorsAndDie ["Project must be hosted in a Github repository. Please set it in package.yaml or *.cabal."])
+      when (isNothing tintinColor)
+        (showErrorsAndDie ["Tintin usually generates a .tintin.yml file with a color configuration. Maybe you don't have enough permissions?\
+                           \\n\nTry creating .tintin.yml and adding color:blue to it."])
+      return Project.Info
+        { name = fromJust projectName
+        , synopsis = fromJust projectSynopsis
+        , githubLink = fromJust projectGithub
+        , githubAuthor = fromJust projectAuthor
+        , color = makeColor $ fromJust tintinColor
+        , logoUrl = tintinLogo
+        , pages = pages
+        }
+
+ where
+  isPackageYaml (Filesystem.Path p) =
+    p == "package.yaml"
+
+  isCabalFile   (Filesystem.Path p) =
+    ".cabal" `Text.isInfixOf` p
+
+  makeColor :: Text -> Project.Color
+  makeColor txt =
+    let capitalLetter = txt
+                        |> Text.head
+                        |> Text.singleton
+                        |> Text.toUpper
+        restOfText    = txt
+                        |> Text.tail
+    in  (capitalLetter <> restOfText)
+         |> toString
+         |> read
+
+  getFieldValue field txt = txt
+                          |> Text.lines
+                          |> filter (field `Text.isPrefixOf`)
+                          |> safeHead
+                          |>> Text.stripPrefix (field <> ":")
+                          |$> Text.strip
+  getAuthor txt = txt
+                  |> Text.stripPrefix "https://github.com/"
+                  |> fromMaybe txt
+                  |> Text.stripPrefix "\""
+                  |> fromMaybe txt
+                  |> Text.takeWhile (/= '/')
 

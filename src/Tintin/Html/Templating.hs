@@ -25,8 +25,8 @@ wrapPage info page = toText . renderText $ do
         div_ [id_ "sidebar-wrapper", class_ $ "h-100 tintin-bg-" <> bgColorOf info] $ do
           div_ [ class_ "h-100 tintin-bg-70"] ( p_ "" )
           ul_ [ class_ "sidebar-nav"] $ do
-            li_ [ class_ $ "sidebar-brand tintin-bg-" <> bgColorOf info] $ do
-              a_ [href_ "index.html", class_ "tintin-fg-white"] $ do
+            li_ [ class_ $ "sidebar-brand d-flex tintin-bg-" <> bgColorOf info] $ do
+              a_ [href_ "index.html", class_ "align-self-center tintin-fg-white"] $ do
                 case Project.logoUrl info of
                   Nothing -> toHtml $ Project.name info
                   Just url -> img_ [src_ url]
@@ -39,15 +39,29 @@ wrapPage info page = toText . renderText $ do
                 a_ [href_ $ Project.filename p, class_ classes] $ do
                   ( toHtml $ Project.title p )
 
-        nav_ [class_ "navbar navbar-expand-lg tintin-fg-white tintin-bg-darkgrey"] $ do
-          a_ [id_ "menu-toggle", href_ "#menu-toggle"] $
-            img_ [ src_ "https://png.icons8.com/material/49/ffffff/menu.png" ]
+        nav_ [class_ "navbar navbar-expand-lg tintin-doc-topbar tintin-fg-white"] $ do
+          a_ [id_ "menu-open", href_ "#menu-toggle", class_ "d-none"] $
+            img_ [ src_ "../../../assets/menu.png", class_ "img-fluid" ]
+          a_ [id_ "menu-close", href_ "#menu-toggle"] $
+            img_ [ src_ "../../../assets/close.png", class_ "img-fluid" ]
 
         div_ [id_ "page-content-wrapper"] $ do
           div_ [class_ "container"] $ do
             div_ [class_ "col"] $
-              toHtmlRaw $ Project.content page
+              div_ [ data_ "aos" "fade-left"
+                   , data_ "aos-duration" "800"
+                   , data_ "aos-once" "true"
+                   ] $
+                toHtmlRaw $ Project.content page
+        div_ [class_ "tintin-doc-footer"] siteGenerated
       tintinPostInit
+
+siteGenerated = do
+  div_ [class_ "float-right"] $ do
+      div_ [class_ "d-inline", style_ "float: left"] $ do
+        p_ [class_ ""] "Site generated with "
+      a_ [ style_ "float: left", href_ "https://theam.github.io/tintin"] $ do
+        img_ [ class_ "filter-gray", src_ "../../../assets/logo.svg" ]
 
 
 wrapHome :: Project.Info -> Project.Page -> Text
@@ -107,15 +121,14 @@ wrapHome info page = toText . renderText $ do
           div_ [class_ "col"] $
             p_ [class_ "tintin-fg-lightgrey"] $ do
               "Developed by "
-              a_ [href_ $ "https://github.com/" <> Project.githubAuthor info] (toHtml $ Project.githubAuthor info)
-          div_ [class_ "col"] $
-            p_ [class_ "tintin-fg-lightgrey float-right"] $ do
-              "Built with "
-              a_ [href_ "https://theam.github.io/tintin"] "tintin"
+              a_ [ href_ $ "https://github.com/" <> Project.githubAuthor info
+                 , class_ $ "tintin-fg-" <> bgColorOf info
+                 ] (toHtml $ Project.githubAuthor info)
+          div_ [class_ "col", style_ ""] $ siteGenerated
 
 
 tintinHeader :: Project.Info -> Project.Page -> Html ()
-tintinHeader (Project.Info {..}) (Project.Page {..}) =
+tintinHeader info@Project.Info {..} Project.Page {..} =
   head_ $ do
     title_ ( toHtml $ name <> " - " <> title )
     link_ [ rel_ "stylesheet"
@@ -131,7 +144,10 @@ tintinHeader (Project.Info {..}) (Project.Page {..}) =
           , href_ "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow-night.min.css"
           ]
     link_ [ rel_ "shortcut icon"
-          , href_ "https://github.com/theam/tintin/raw/design-fixes/assets/favicon-grey.ico"
+          , href_ ( "https://github.com/theam/tintin/raw/design-fixes/assets/favicon-"
+                  <> bgColorOf info
+                  <> ".ico"
+                  )
           ]
     style_ Style.style
 
@@ -146,10 +162,23 @@ tintinPostInit = do
   script_ [ src_ "https://cdn.rawgit.com/icons8/bower-webicon/v0.10.7/jquery-webicon.min.js" ] ( "" :: Text )
   script_ "$(function() { AOS.init(); })"
   script_ [ src_ "https://cdn.rawgit.com/michalsnik/aos/2.1.1/dist/aos.js"] ("" :: Text)
+  script_ [ src_ "https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.min.js" ] ("" :: Text)
   script_ "hljs.initHighlightingOnLoad()"
-  script_ "$(function () {$(\"#menu-toggle\").click(function(e) {\
+  script_ "$(function () {$(\"#menu-open\").click(function(e) {\
         \e.preventDefault();\
         \$(\"#wrapper\").toggleClass(\"toggled\");\
+        \anime({targets: \"#menu-open img\", scale: 0.125, rotate: '0deg'});\
+        \$(\"#menu-close\").toggleClass(\"d-none\");\
+        \$(\"#menu-open\").toggleClass(\"d-none\");\
+        \anime({targets: \"#menu-close img\", scale: 1, rotate: '180deg'});\
+    \})});"
+  script_ "$(function () {$(\"#menu-close\").click(function(e) {\
+        \e.preventDefault();\
+        \$(\"#wrapper\").toggleClass(\"toggled\");\
+        \anime({targets: \"#menu-close img\", scale: 0.125, rotate: '0deg'});\
+        \$(\"#menu-close\").toggleClass(\"d-none\");\
+        \$(\"#menu-open\").toggleClass(\"d-none\");\
+        \anime({targets: \"#menu-open img\", scale: 1, rotate: '180deg'});\
     \})});"
 
 

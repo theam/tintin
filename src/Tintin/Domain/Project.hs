@@ -13,7 +13,7 @@ data Color
   | LightOrange
   | Red
   | Grey
-  deriving Show
+  deriving (Show, Read)
 
 
 data Page = Page

@@ -1,6 +1,6 @@
 module Tintin.Html.Style where
 
-import Tintin.Core hiding (( & ), rem, (|>))
+import Tintin.Core as Core hiding (( & ), rem, (|>))
 
 import Clay
 import qualified Clay.Media as Media
@@ -16,24 +16,14 @@ style = toText . render $ do
     fontSize (em 1)
     overflowX hidden
 
-  forM [h1, h2, h3] $ \x -> x ? do
+  forM_ (zip [(0::Double)..] [h1, h2, h3]) $ \(n, x) -> x ? do
     fontFamily ["Montserrat" ] [ sansSerif ]
     fontWeight bold
+    fontSize (em (2.441 Core.** n))
 
-  h1 ? do
-    fontSize (em 2.441)
-
-  h2 ? do
-    fontSize (em 1.953)
-
-  h3 ? do
-    fontSize (em 1.563)
-
-
-  -- a ? do
-  --   let ( ( _, colorValue ) : _ ) = Tintin.Core.filter (\x -> fst x == "lightblue") colorNames
-  --   color colorValue
-  --   ":hover" Clay.& color colorValue
+  h1 ? fontSize (em 2.441)
+  h2 ? fontSize (em 1.953)
+  h3 ? fontSize (em 1.563)
 
   "#header-container" ? do
     marginTop (rem 5)
@@ -68,7 +58,7 @@ style = toText . render $ do
 
   "#wrapper" ? do
     paddingLeft (px 0)
-    transition "all" (sec 0.5) ease (sec 0.5)
+    transition "all" (sec 0.5) ease (sec 0)
     ".toggled" & do
       paddingLeft (px 250)
       "#sidebar-wrapper" ? do
@@ -80,6 +70,7 @@ style = toText . render $ do
   "#page-content-wrapper" ? do
     width (pct 100)
     position absolute
+    marginTop (rem 3)
     padding (px 15) (px 15) (px 15) (px 15)
 
   "#sidebar-wrapper" ? do
@@ -90,7 +81,7 @@ style = toText . render $ do
     marginLeft (px (-250))
     overflowY hidden
     overflowX hidden
-    transition "all" (sec 0.5) ease (sec 0.5)
+    transition "all" (sec 0.5) ease (sec 0)
 
 
   ".sidebar-nav" ? do
@@ -117,14 +108,42 @@ style = toText . render $ do
           textDecoration none
           color white
 
+  ".tintin-doc-topbar" ? do
+    height (rem 5)
+    a ? do
+      marginLeft (rem 1)
+      width (rem 1.5)
+      img ? do
+        Clay.filter (invert $ pct 70)
+
+  ".filter-gray" ? do
+    position relative
+    bottom (px ( -3 ))
+    marginLeft (rem 0.25)
+    marginRight (rem 1)
+    height (rem 1)
+    Clay.filter (brightness 0.75)
+
+  ".tintin-doc-footer" ? do
+    position absolute
+    bottom (rem 0.5)
+    right (rem 2)
+    marginRight (rem 2)
+    color (rgba 0 0 0 0.30)
+
+  ".tintin-generated-with" ? do
+    pass
+
   ".sidebar-nav" |> ".sidebar-brand" ? do
-    height (px 65)
-    fontSize (px 28)
-    lineHeight (px 60)
+    height (rem 3)
+    fontSize (rem 2)
     fontFamily ["Montserrat"] [sansSerif]
     fontWeight bold
+    paddingTop (rem 2.5)
+    paddingBottom (rem 2.5)
+    marginBottom (rem 1.5)
     img ? do
-      maxHeight (px 35)
+      height (rem 1.5)
 
   ".tintin-navbar" ? do
     fontWeight bold

@@ -10,6 +10,8 @@ module Tintin.Capabilities.Filesystem
   , readFile
   , makeDirectory
   , writeFile
+  , doesExist
+
   , getPathsWith
   )
 where
@@ -32,6 +34,7 @@ data Capability = Capability
   , _readFile         :: Path -> IO Text
   , _makeDirectory    :: Path -> IO ()
   , _writeFile        :: Path -> Text -> IO ()
+  , _doesExist        :: Path -> IO Bool
   }
 
 
@@ -58,6 +61,8 @@ local =
   _makeDirectory (Path p) = createDirectoryIfMissing True (toString p)
 
   _writeFile (Path p) = Core.writeFile (toString p)
+
+  _doesExist (Path p) = doesPathExist (toString p)
 
 
 deleteIfExists :: Has Capability eff
@@ -94,6 +99,12 @@ writeFile :: Has Capability eff
           -> Text
           -> Effectful eff ()
 writeFile = liftCapability _writeFile
+
+
+doesExist :: Has Capability eff
+          => Path
+          -> Effectful eff Bool
+doesExist = liftCapability _doesExist
 
 
 getPathsWith :: Extension -> [Path] -> [Path]
