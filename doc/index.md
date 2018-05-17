@@ -1,6 +1,5 @@
 ---
-title: Tintin
-subtitle: Document your package, before asking Haddock
+title: Home
 ---
 
 # Tintin
