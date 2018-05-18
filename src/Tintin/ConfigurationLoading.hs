@@ -13,6 +13,8 @@ import qualified Data.Text as Text
 import Universum.Unsafe (fromJust)
 import Text.Read (read)
 
+import qualified Universum.Debug as Debug
+
 
 loadInfo :: ( Has Logging.Capability eff
             , Has Filesystem.Capability eff
@@ -84,14 +86,13 @@ loadInfo htmlFiles = do
 
   getFieldValue field txt = txt
                           |> lines
-                          |> filter (field `Text.isPrefixOf`)
+                          |> filter (\t -> field `Text.isPrefixOf` Text.strip t)
                           |> safeHead
+                          |$> Text.strip
                           |>> Text.stripPrefix (field <> ":")
                           |$> Text.strip
   getAuthor txt = txt
-                  |> Text.stripPrefix "https://github.com/"
-                  |> fromMaybe txt
-                  |> Text.stripPrefix "\""
+                  |> (\t -> Text.stripPrefix "https://github.com/" t <|> Text.stripPrefix "\"" t)
                   |> fromMaybe txt
                   |> Text.takeWhile (/= '/')
 
