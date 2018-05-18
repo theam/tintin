@@ -9,6 +9,9 @@ import qualified Tintin.Domain.Project as Project
 import qualified Data.Text as Text
 
 
+asset :: Text -> Text
+asset txt = "https://github.com/theam/tintin/raw/master/assets/" <> txt
+
 wrap :: Project.Info -> Project.Page -> Text
 wrap info page =
   if (Project.filename page) == "index.html"
@@ -41,9 +44,9 @@ wrapPage info page = toText . renderText $ do
 
         nav_ [class_ "navbar navbar-expand-lg tintin-doc-topbar tintin-fg-white"] $ do
           a_ [id_ "menu-open", href_ "#menu-toggle", class_ "d-none"] $
-            img_ [ src_ "../../../assets/menu.png", class_ "img-fluid" ]
+            img_ [ src_ $ asset "menu.png", class_ "img-fluid" ]
           a_ [id_ "menu-close", href_ "#menu-toggle"] $
-            img_ [ src_ "../../../assets/close.png", class_ "img-fluid" ]
+            img_ [ src_ $ asset "close.png", class_ "img-fluid" ]
 
         div_ [id_ "page-content-wrapper"] $ do
           div_ [class_ "container"] $ do
@@ -61,7 +64,7 @@ siteGenerated = do
       div_ [class_ "d-inline", style_ "float: left"] $ do
         p_ [class_ ""] "Site generated with "
       a_ [ style_ "float: left", href_ "https://theam.github.io/tintin"] $ do
-        img_ [ class_ "filter-gray", src_ "../../../assets/logo.svg" ]
+        img_ [ class_ "filter-gray", src_ $ asset "logo.svg" ]
 
 
 wrapHome :: Project.Info -> Project.Page -> Text
@@ -72,7 +75,7 @@ wrapHome info page = toText . renderText $ do
     div_ [class_ $ "tintin-navigation tintin-bg-" <> bgColorOf info] $ do
       div_ [class_ "cover-container d-flex p-3 mx-auto flex-column tintin-fg-white"] $ do
         a_ [href_ "https://theam.github.io/tintin"] $ do
-          img_ [ src_ "../../../assets/logo.svg", class_ "watermark" ]
+          img_ [ src_ $ asset "logo.svg", class_ "watermark" ]
         main_ [role_ "main", class_ "masthead mb-auto"] $ do
           div_ [class_ "container"] $ do
             div_ [class_ "row align-items-center"] $ do
@@ -112,7 +115,7 @@ wrapHome info page = toText . renderText $ do
         div_ $
           ul_ [class_ "navbar-nav mr-sm-2"] $
             li_ [class_ "nav-item"] $
-              a_ [class_ "nav-link", href_ "https://github.com/theam/tintin"] "View on GitHub"
+              a_ [class_ "nav-link", href_ $ Project.githubLink info] "View on GitHub"
 
   footer =
     footer_ [ class_ "tintin-bg-darkgrey tintin-fg-white"] $
