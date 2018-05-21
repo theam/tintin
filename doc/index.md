@@ -14,7 +14,7 @@ a community.
 
 Teaching is building.
 
-    - Julie Moronuki, author of Haskell Programming from first principles
+    - Julie Moronuki, co-author of Haskell Programming from first principles
 ```
 
 ---
