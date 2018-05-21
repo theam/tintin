@@ -1,8 +1,10 @@
-# tintin
+# Tintin
 
 Tintin allows you to create fancy **plug 'n' play** documentation sites for your Haskell project very easily.
 
 [Proceed to site](https://theam.github.io/tintin) to learn how to use Tintin.
+
+# FAQ
 
 ## Why not just use Haddock?
 
@@ -26,7 +28,7 @@ way.
 
 # Projects using Tintin
 
-Please submit a PR if you are using tintin!
+Please submit a PR if you are using Tintin!
 
 |λ|λ|
 |-|-|
