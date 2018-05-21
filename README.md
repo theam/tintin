@@ -26,7 +26,7 @@ way.
 
 # Projects using Tintin
 
-Please submit a PR if you are using tintin! :smile:
+Please submit a PR if you are using tintin!
 
 |λ|λ|
 |-|-|
