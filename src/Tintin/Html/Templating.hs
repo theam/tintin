@@ -112,7 +112,7 @@ wrapHome info page = toText . renderText $ do
         div_ [class_ "collapse navbar-collapse", id_ "navbarSupportedContent"] $ do
           ul_ [class_ "navbar-nav mr-auto"] $ do
             li_ [class_ "nav-item active"] $
-              a_ [class_ "nav-link active", href_ "/index.html"] "Home"
+              a_ [class_ "nav-link active", href_ "index.html"] "Home"
             let (page:_) = filter (\x -> "index.html" /= Project.filename x ) (Project.pages info)
             li_ [class_ "nav-item"] $
               a_ [class_ "nav-link", href_ (Project.filename page)] "Docs"
