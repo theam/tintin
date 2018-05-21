@@ -10,7 +10,7 @@ import qualified Data.Text as Text
 
 
 asset :: Text -> Text
-asset txt = "https://github.com/theam/tintin/raw/master/assets/" <> txt
+asset txt = "https://s3-eu-west-1.amazonaws.com/worldwideapps/assets/" <> txt
 
 wrap :: Project.Info -> Project.Page -> Text
 wrap info page =
@@ -22,49 +22,55 @@ wrap info page =
 wrapPage :: Project.Info -> Project.Page -> Text
 wrapPage info page = toText . renderText $ do
   tintinHeader info page
-  body_ [class_ "tintin-fg-black tintin-bg-white"] $ do
-    section_ [ id_ "content"] $ do
-      div_ [id_ "wrapper", class_ "toggled"] $ do
-        div_ [id_ "sidebar-wrapper", class_ $ "h-100 tintin-bg-" <> bgColorOf info] $ do
-          div_ [ class_ "h-100 tintin-bg-70"] ( p_ "" )
-          ul_ [ class_ "sidebar-nav"] $ do
-            li_ [ class_ $ "sidebar-brand d-flex tintin-bg-" <> bgColorOf info] $ do
-              a_ [href_ "index.html", class_ "align-self-center tintin-fg-white"] $ do
-                case Project.logoUrl info of
-                  Nothing -> toHtml $ Project.name info
-                  Just url -> img_ [src_ url]
-            forM_ (filter (\p -> "index.html" /= Project.filename p ) (Project.pages info) ) $ \p -> do
-              li_ $ do
-                let classes =
-                      if Project.title page == Project.title p
-                      then "tintin-fg-active"
-                      else "tintin-fg-disabled"
-                a_ [href_ $ Project.filename p, class_ classes] $ do
-                  ( toHtml $ Project.title p )
+  body_ [class_ "h-100 tintin-fg-black tintin-bg-white"] $ do
+    div_ [id_ "main-container", class_ "h-100"] $ do
+      section_ [ id_ "content"] $ do
+        div_ [id_ "wrapper", class_ "toggled"] $ do
+          div_ [id_ "sidebar-wrapper", class_ $ "h-100 tintin-bg-" <> bgColorOf info] $ do
+            div_ [ class_ "h-100 tintin-bg-70"] ( p_ "" )
+            ul_ [ class_ "sidebar-nav"] $ do
+              li_ [ class_ $ "sidebar-brand d-flex tintin-bg-" <> bgColorOf info] $ do
+                a_ [href_ "index.html", class_ "align-self-center tintin-fg-white"] $ do
+                  case Project.logoUrl info of
+                    Nothing -> toHtml $ Project.name info
+                    Just url -> img_ [src_ url]
+              forM_ (filter (\p -> "index.html" /= Project.filename p ) (Project.pages info) ) $ \p -> do
+                li_ $ do
+                  let classes =
+                        if Project.title page == Project.title p
+                        then "tintin-fg-active"
+                        else "tintin-fg-disabled"
+                  a_ [href_ $ Project.filename p, class_ classes] $ do
+                    ( toHtml $ Project.title p )
 
-        nav_ [class_ "navbar navbar-expand-lg tintin-doc-topbar tintin-fg-white"] $ do
-          a_ [id_ "menu-open", href_ "#menu-toggle", class_ "d-none"] $
-            img_ [ src_ $ asset "menu.png", class_ "img-fluid" ]
-          a_ [id_ "menu-close", href_ "#menu-toggle"] $
-            img_ [ src_ $ asset "close.png", class_ "img-fluid" ]
+          nav_ [class_ "navbar navbar-expand-lg tintin-doc-topbar tintin-fg-white"] $ do
+            a_ [id_ "menu-open", href_ "#menu-toggle", class_ "d-none"] $
+              img_ [ src_ $ asset "menu.png", class_ "img-fluid" ]
+            a_ [id_ "menu-close", href_ "#menu-toggle"] $
+              img_ [ src_ $ asset "close.png", class_ "img-fluid" ]
 
-        div_ [id_ "page-content-wrapper"] $ do
-          div_ [class_ "container"] $ do
-            div_ [class_ "col"] $
-              div_ [ data_ "aos" "fade-left"
-                   , data_ "aos-duration" "800"
-                   , data_ "aos-once" "true"
-                   ] $
-                toHtmlRaw $ Project.content page
-        div_ [class_ "tintin-doc-footer"] siteGenerated
-      tintinPostInit
+          div_ [id_ "page-content-wrapper"] $ do
+            div_ [class_ "container"] $ do
+              div_ [class_ "col"] $
+                div_ [ data_ "aos" "fade-left"
+                     , data_ "aos-duration" "800"
+                     , data_ "aos-once" "true"
+                     ] $
+                  toHtmlRaw $ Project.content page
+      div_ [class_ "tintin-doc-footer clear-fix"]
+        siteGenerated
+    tintinPostInit
 
 siteGenerated = do
   div_ [class_ "float-right"] $ do
-      div_ [class_ "d-inline", style_ "float: left"] $ do
-        p_ [class_ ""] "Site generated with "
-      a_ [ style_ "float: left", href_ "https://theam.github.io/tintin"] $ do
-        img_ [ class_ "filter-gray", src_ $ asset "logo.svg" ]
+    div_ [class_ "d-inline", style_ "float: left"] $ do
+      p_ [class_ ""] "Site generated with "
+    a_ [ style_ "float: left", href_ "https://theam.github.io/tintin"] $ do
+      img_ [ class_ "filter-gray", src_ $ asset "logo.svg" ]
+    div_ [class_ "clear-fix float-right"] $ do
+      span_ [style_ "float:left"] $ toHtmlRaw ("&mdash; &copy; 2018 " :: Text)
+      a_ [class_ "float:left", href_ "http://theam.io"] $
+        img_ [class_ "footer-theam", src_ "http://theam.io/logo_theam.png"]
 
 
 wrapHome :: Project.Info -> Project.Page -> Text
@@ -74,8 +80,6 @@ wrapHome info page = toText . renderText $ do
 
     div_ [class_ $ "tintin-navigation tintin-bg-" <> bgColorOf info] $ do
       div_ [class_ "cover-container d-flex p-3 mx-auto flex-column tintin-fg-white"] $ do
-        a_ [href_ "https://theam.github.io/tintin"] $ do
-          img_ [ src_ $ asset "logo.svg", class_ "watermark" ]
         main_ [role_ "main", class_ "masthead mb-auto"] $ do
           div_ [class_ "container"] $ do
             div_ [class_ "row align-items-center"] $ do
@@ -127,7 +131,8 @@ wrapHome info page = toText . renderText $ do
               a_ [ href_ $ "https://github.com/" <> Project.githubAuthor info
                  , class_ $ "tintin-fg-" <> bgColorOf info
                  ] (toHtml $ Project.githubAuthor info)
-          div_ [class_ "col", style_ ""] $ siteGenerated
+          div_ [class_ "col", style_ ""] $ do
+            siteGenerated
 
 
 tintinHeader :: Project.Info -> Project.Page -> Html ()
@@ -147,7 +152,7 @@ tintinHeader info@Project.Info {..} Project.Page {..} =
           , href_ "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow-night.min.css"
           ]
     link_ [ rel_ "shortcut icon"
-          , href_ ( "https://github.com/theam/tintin/raw/design-fixes/assets/favicon-"
+          , href_ ( asset $ "favicon-"
                   <> bgColorOf info
                   <> ".ico"
                   )

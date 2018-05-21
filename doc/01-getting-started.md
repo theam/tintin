@@ -2,15 +2,35 @@
 title: Getting Started
 ---
 
-# Requirements
+# Getting Started with Tintin
 
-You'll have to have installed the Haskell build tool [stack](https://haskellstack.org)
+**Note:** Currently, `tintin` only supports [stack](https://haskellstack.org) projects.
 
-# Prepare your project
-
-Begin by depending on the `inliterate` package. You can add this in your `build-depends` field in the
-***.cabal** file of your project, or in the `dependencies` field in your **package.yaml** file.
-
-Write into `doc/*.md`.
+There is a [workaround for cabal projects](#workaround-for-cabal).
 
 
+## Requirements
+
+### Stack
+
+You'll have to have installed the [stack](https://haskellstack.org) Haskell build tool .
+The installation is straightforward:
+
+```bash
+wget -qO- https://get.haskellstack.org/ | sh
+```
+
+### Inliterate
+
+Inliterate is the rendering mechanism for the documentation. Add the following packages
+to the `extra-deps` section of your `stack.yaml` file:
+
+```bash
+- inliterate-0.1.0
+- lucid-extras-0.1.0.0
+- plotlyhs-0.2
+```
+
+After that perform a `stack install inliterate --stack-yaml <your stack.yaml file>`.
+
+You are ready to roll, proceed to [documenting your project](02-documenting-your-project.html)!
