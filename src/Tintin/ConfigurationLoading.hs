@@ -13,8 +13,6 @@ import qualified Data.Text as Text
 import Universum.Unsafe (fromJust)
 import Text.Read (read)
 
-import qualified Universum.Debug as Debug
-
 
 loadInfo :: ( Has Logging.Capability eff
             , Has Filesystem.Capability eff

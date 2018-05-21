@@ -19,7 +19,8 @@ Teaching is building.
 
 ---
 
-One day, all Haskell programmers outgrow tutorials and Haddock is more than enough,
+One day, all Haskell programmers outgrow tutorials. Haddock is more than enough, right?
+
 Haskell is awesome enough to have some very expressive types that tell you how to
 work your way through the library that you're using.
 

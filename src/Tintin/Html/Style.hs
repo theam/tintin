@@ -9,9 +9,12 @@ import Clay.Selector
 style :: Text
 style = toText . render $ do
   html ? do
+    height (pct 100)
     minHeight (pct 100)
 
   body ? do
+    height (pct 100)
+    minHeight (pct 100)
     fontFamily ["IBM Plex Sans"] [ sansSerif ]
     fontSize (em 1)
     overflowX hidden
@@ -72,6 +75,8 @@ style = toText . render $ do
     position absolute
     marginTop (rem 3)
     padding (px 15) (px 15) (px 15) (px 15)
+    img ? do
+      maxWidth (pct 100)
 
   "#sidebar-wrapper" ? do
     zIndex 1000
@@ -124,12 +129,26 @@ style = toText . render $ do
     height (rem 1)
     Clay.filter (brightness 0.75)
 
+  ".footer-theam" ? do
+    position relative
+    bottom (px $ 1)
+    marginLeft (rem $ -0.25)
+    height (rem 1.75)
+    Clay.filter (invert (pct 75))
+    -- Clay.filter (brightness 0.75)
+
   ".tintin-doc-footer" ? do
-    position absolute
-    bottom (rem 0.5)
-    right (rem 2)
-    marginRight (rem 2)
+    bottom (px 0)
+    height (rem $ -15)
+    width (pct 100)
     color (rgba 0 0 0 0.30)
+
+  ".main-container" ? do
+    minHeight (pct 100)
+    position relative
+
+  "#content" ? do
+    minHeight (pct 95)
 
   ".tintin-generated-with" ? do
     pass
@@ -200,16 +219,17 @@ style = toText . render $ do
 
 colorNames :: [(Text, Color)]
 colorNames =
-  [ ("black"     , "#1d1f21")
-  , ("white"     , "#f5f8f6")
-  , ("grey"      , "#4D4D4D")
-  , ("red"       , "#D30228")
-  , ("darkgreen" , "#3C8B6A")
-  , ("lightgreen", "#A4CB58")
-  , ("darkorange", "#FF6602")
-  , ("blue"      , "#94C1E8")
-  , ("darkblue"  , "#007C99")
-  , ("purple"    , "#9F76B4")
-  , ("bronze"    , "#A4A27A")
-  , ("darkgrey"  , "#282a2e")
+  [ ("black"      , "#1d1f21")
+  , ("white"      , "#f5f8f6")
+  , ("grey"       , "#4D4D4D")
+  , ("red"        , "#D30228")
+  , ("darkgreen"  , "#3C8B6A")
+  , ("lightgreen" , "#A4CB58")
+  , ("darkorange" , "#FF6602")
+  , ("lightorange", "#FAA73E")
+  , ("blue"       , "#94C1E8")
+  , ("darkblue"   , "#007C99")
+  , ("purple"     , "#9F76B4")
+  , ("bronze"     , "#A4A27A")
+  , ("darkgrey"   , "#282a2e")
   ]
