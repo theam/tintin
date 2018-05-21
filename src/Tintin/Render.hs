@@ -10,6 +10,8 @@ import Tintin.Domain.Project as Project
 import Tintin.Html.Templating as Templating
 import Tintin.Errors as Errors
 
+import qualified Data.Text as Text
+
 perform :: ( Has Logging.Capability eff
            , Has Filesystem.Capability eff
            , Has Process.Capability eff
@@ -37,6 +39,7 @@ writeOutput (OutputDirectory od) info = do
   Logging.debug "Writing HTML output"
   forM_ (Project.pages info) $ \page -> do
     let newContent = Templating.wrap info page
-    Filesystem.writeFile (Filesystem.Path $ od <> Project.filename page) newContent
+    let slash = if "/" `Text.isSuffixOf` od then "" else "/"
+    Filesystem.writeFile (Filesystem.Path $ od <> slash <> Project.filename page) newContent
 
 
