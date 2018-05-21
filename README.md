@@ -2,6 +2,8 @@
 
 Tintin allows you to create fancy **plug 'n' play** documentation sites for your Haskell project very easily.
 
+[Proceed to site](https://theam.github.io/tintin) to learn how to use Tintin.
+
 ## Why not just use Haddock?
 
 Haddock provides a great interface for writing API documentation, which is a kind of *hard documentation*.
