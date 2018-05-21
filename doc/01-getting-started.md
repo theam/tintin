@@ -6,8 +6,6 @@ title: Getting Started
 
 **Note:** Currently, `tintin` only supports [stack](https://haskellstack.org) projects.
 
-There is a [workaround for cabal projects](#workaround-for-cabal).
-
 
 ## Requirements
 
