@@ -100,21 +100,21 @@ wrapHome info page = toText . renderText $ do
     tintinPostInit
  where
   navbar =
-    nav_ [ class_ "navbar navbar-expand-lg navbar-dark tintin-navbar"
+    nav_ [ class_ "tintin-navbar"
          , style_ "width: 100%;"
          ] $ do
-      div_ [ class_ "container" ] $ do
-        div_ [class_ "collapse navbar-collapse", id_ "navbarSupportedContent"] $ do
-          ul_ [class_ "navbar-nav mr-auto"] $ do
-            li_ [class_ "nav-item active"] $
-              a_ [class_ "nav-link active", href_ "index.html"] "Home"
+      div_ [ class_ "container d-flex align-items-center" ] $ do
+        div_ [class_ "mr-auto"] $ do
+          ul_ [class_ "left-part"] $ do
+            li_ [class_ "tintin-navbar-active"] $
+              a_ [class_ "", href_ "index.html"] "Home"
             let (page:_) = filter (\x -> "index.html" /= Project.filename x ) (Project.pages info)
-            li_ [class_ "nav-item"] $
-              a_ [class_ "nav-link", href_ (Project.filename page)] "Docs"
-        div_ $
-          ul_ [class_ "navbar-nav mr-sm-2"] $
-            li_ [class_ "nav-item"] $
-              a_ [class_ "nav-link", href_ $ "https://github.com/" <> Project.githubLink info] "View on GitHub"
+            li_ [class_ ""] $
+              a_ [class_ "", href_ (Project.filename page)] "Docs"
+        div_ [class_ ""]$
+          ul_ [class_ ""] $
+            li_ [class_ ""] $
+              a_ [class_ "", href_ $ "https://github.com/" <> Project.githubLink info] "View on GitHub"
 
   footer =
     footer_ [ class_ "tintin-bg-darkgrey tintin-fg-white"] $
