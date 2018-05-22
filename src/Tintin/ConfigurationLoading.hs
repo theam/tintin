@@ -13,6 +13,7 @@ import qualified Data.Text as Text
 import Universum.Unsafe (fromJust)
 import Text.Read (read)
 
+import qualified Universum.Debug as Debug
 
 loadInfo :: ( Has Logging.Capability eff
             , Has Filesystem.Capability eff
@@ -56,7 +57,7 @@ loadInfo htmlFiles = do
       return Project.Info
         { name = fromJust projectName
         , synopsis = fromJust projectSynopsis
-        , githubLink = fromJust projectGithub
+        , githubLink = parseGithubUrl $ fromJust projectGithub
         , githubAuthor = fromJust projectAuthor
         , color = makeColor $ fromJust tintinColor
         , logoUrl = tintinLogo
@@ -89,10 +90,17 @@ loadInfo htmlFiles = do
                           |$> Text.strip
                           |>> Text.stripPrefix (field <> ":")
                           |$> Text.strip
-  getAuthor txt = txt
-                  |> (\t -> Text.stripPrefix "https://github.com/" t <|> Text.stripPrefix "\"" t)
-                  |> fromMaybe txt
-                  |> Text.takeWhile (/= '/')
+  getAuthor txt =
+    txt
+    |> (Text.stripPrefix "\"" >=> Text.stripSuffix "\"")
+    |> fromMaybe txt
+    |> Text.takeWhile (/= '/')
+
+  parseGithubUrl txt =
+    txt
+    |>  Text.stripPrefix "\""
+    |>> Text.stripSuffix "\""
+    |>  fromMaybe txt
 
 
 

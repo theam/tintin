@@ -119,7 +119,7 @@ wrapHome info page = toText . renderText $ do
         div_ $
           ul_ [class_ "navbar-nav mr-sm-2"] $
             li_ [class_ "nav-item"] $
-              a_ [class_ "nav-link", href_ $ Project.githubLink info] "View on GitHub"
+              a_ [class_ "nav-link", href_ $ "https://github.com/" <> Project.githubLink info] "View on GitHub"
 
   footer =
     footer_ [ class_ "tintin-bg-darkgrey tintin-fg-white"] $
