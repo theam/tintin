@@ -32,6 +32,7 @@ executables:
     main: Main.hs
     dependencies:
     - base
+    - inliterate
     - {{ name }}
     ghc-options:
     - -rtsopts
@@ -231,7 +232,7 @@ If you haven't, check [the Tintin website](https://theam.github.io/tintin) to le
 title: Getting started with {{name}}
 ---
 
-# Getting started with {{name}}
+# Getting started
 
 This is the first page of your documentation, feel free to edit it.
 
