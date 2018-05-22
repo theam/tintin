@@ -4,7 +4,6 @@ import Tintin.Core as Core hiding (( & ), rem, (|>))
 
 import Clay
 import qualified Clay.Media as Media
-import Clay.Selector
 
 style :: Text
 style = toText . render $ do
@@ -113,10 +112,19 @@ style = toText . render $ do
           textDecoration none
           color white
 
+  "#menu-toggle" ? do
+    position absolute
+    img ? do
+      position absolute
+      left (px 0)
+    ".rotateIn" ? do
+      zIndex 999
+
   ".tintin-doc-topbar" ? do
-    height (rem 5)
+    height (rem 3)
     a ? do
       marginLeft (rem 1)
+      marginTop (rem 0)
       width (rem 1.5)
       img ? do
         Clay.filter (invert $ pct 70)
