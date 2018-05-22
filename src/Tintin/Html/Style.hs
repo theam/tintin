@@ -172,11 +172,11 @@ style = toText . render $ do
     backgroundColor (rgba 255 255 255 0.15)
 
   forM colorNames $ \(colorName, colorValue) ->
-    (text $ ".tintin-bg-" <> colorName) ? do
+    (element $ ".tintin-bg-" <> colorName) ? do
       backgroundColor colorValue
 
   forM colorNames $ \(colorName, colorValue) ->
-    (text $ ".tintin-fg-" <> colorName) ? do
+    (element $ ".tintin-fg-" <> colorName) ? do
       color colorValue
 
   ".tintin-fg-active" ? do

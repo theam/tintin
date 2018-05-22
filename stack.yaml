@@ -36,13 +36,17 @@ resolver: lts-11.7
 # non-dependency (i.e. a user package), and its test suites and benchmarks
 # will not be run. This is useful for tweaking upstream packages.
 packages:
-- .
-# Dependency packages to be pulled from upstream that are not in the resolver
-# (e.g., acme-missiles-0.3)
+- location: .
+- location:
+    git: https://github.com/sebastiaanvisser/clay.git
+    commit: dce8843fd455ce6a1f896103a74d47addb979b90
+  extra-dep: true
+
 extra-deps:
   - inliterate-0.1.0
   - plotlyhs-0.2
   - lucid-extras-0.1.0.0
+  - universum-1.2.0
 
 # Override default flag values for local packages and extra-deps
 # flags: {}
