@@ -5,6 +5,7 @@ license:             Apache-2.0
 author:              "The Agile Monkeys"
 maintainer:          "hackers@theam.io"
 copyright:           "2018 Theam"
+license-file:        LICENSE.md
 
 extra-source-files:
 - README.md
@@ -12,12 +13,12 @@ extra-source-files:
 
 # Metadata used when publishing your package
 synopsis:            A softer alternative to Haddock
-# category:            Web
+category:            Documentation
 
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description:         Please see the README on GitHub at <https://github.com/theam/tintin>
+description:         Please see the website <https://theam.github.io/tintin>
 
 default-extensions:
 - DeriveGeneric
