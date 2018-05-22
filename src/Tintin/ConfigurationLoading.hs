@@ -72,8 +72,8 @@ loadInfo htmlFiles = do
   isCabalFile   (FS.Path p) =
     ".cabal" `T.isInfixOf` p
 
-  makeColor :: Text -> Project.Color
-  makeColor txt =
+makeColor :: Text -> Project.Color
+makeColor txt =
     let capitalLetter = txt
                         |> T.head
                         |> T.singleton
@@ -84,24 +84,27 @@ loadInfo htmlFiles = do
          |> toString
          |> read
 
-  getFieldValue field txt = txt
+getFieldValue field txt = txt
                           |> lines
                           |> filter (\t -> field `T.isPrefixOf` T.strip t)
                           |> safeHead
                           |$> T.strip
                           >>= T.stripPrefix (field <> ":")
                           |$> T.strip
-  getAuthor txt =
+                          
+getAuthor txt =
     txt
     |> (T.stripPrefix "\"" >=> T.stripSuffix "\"")
     |> fromMaybe txt
     |> T.takeWhile (/= '/')
 
-  parseGithubUrl txt =
-    txt
-    |>  T.stripPrefix "\""
-    >>= T.stripSuffix "\""
-    |>  fromMaybe txt
 
+parseGithubUrl txt = fromMaybe txt $ do 
+  T.stripPrefix "\"" txt >>= T.stripSuffix "\""
 
+-- parseGithubUrl txt =
+--     txt
+--     |>  T.stripPrefix "\""
+--     >>= T.stripSuffix "\""
+--     |>  fromMaybe txt
 
