@@ -1,0 +1,248 @@
+{-# START_FILE package.yaml #-}
+# This YAML file describes your package. Stack will automatically generate a
+# Cabal file when you run `stack build`. See the hpack website for help with
+# this file: <https://github.com/sol/hpack>.
+name: {{ name }}
+version: '0.0.0'
+github: "{{github-username}}{{^github-username}}githubuser{{/github-username}}/{{name}}"
+license: MIT
+author: "{{author-name}}{{^author-name}}Author name here{{/author-name}}"
+maintainer: "{{author-name}}{{^author-name}}Author name here{{/author-name}}"
+synopsis: A new Haskell package.
+description: See <https://{{github-username}}.github.io/{{name}}>
+# category: Other
+
+extra-source-files:
+- CHANGELOG.md
+- LICENSE.md
+- package.yaml
+- README.md
+- stack.yaml
+
+ghc-options: -Wall
+
+library:
+  dependencies:
+  - base
+  source-dirs: library
+
+executables:
+  {{ name }}:
+    source-dirs: executable
+    main: Main.hs
+    dependencies:
+    - base
+    - {{ name }}
+    ghc-options:
+    - -rtsopts
+    - -threaded
+    - -with-rtsopts=-N
+
+benchmarks:
+  {{ name }}-benchmarks:
+    source-dirs: benchmark
+    main: Main.hs
+    dependencies:
+    - base
+    - {{ name }}
+    - criterion
+    ghc-options:
+    - -rtsopts
+    - -threaded
+    - -with-rtsopts=-N
+
+tests:
+  {{ name }}-test-suite:
+    source-dirs: test-suite
+    main: Main.hs
+    dependencies:
+    - base
+    - {{ name }}
+    - tasty
+    - tasty-hspec
+    ghc-options:
+    - -rtsopts
+    - -threaded
+    - -with-rtsopts=-N
+
+{-# START_FILE .gitignore #-}
+# Stack uses this directory as scratch space.
+/.stack-work/
+# Stack generates the Cabal file from `package.yaml` through hpack.
+/*.cabal
+
+{-# START_FILE CHANGELOG.md #-}
+# Change log
+
+{{ name }} uses [Semantic Versioning][].
+The change log is available through the [releases on GitHub][].
+
+[Semantic Versioning]: http://semver.org/spec/v2.0.0.html
+[releases on GitHub]: https://github.com/{{github-username}}{{^github-username}}githubuser{{/github-username}}/{{ name }}/releases
+
+{-# START_FILE LICENSE.md #-}
+[The MIT License (MIT)][]
+
+Copyright (c) {{year}}{{^year}}2018{{/year}} {{author-name}}{{^author-name}}Author name here{{/author-name}}
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+[The MIT License (MIT)]: https://opensource.org/licenses/MIT
+
+{-# START_FILE README.md #-}
+# [{{ name }}][]
+
+Thanks for starting a project with Haskeleton and Tintin!
+
+If you haven't heard of Haskeleton before, I suggest reading the introductory
+blog post. You can find it here:
+<http://taylor.fausak.me/2014/03/04/haskeleton-a-haskell-project-skeleton/>.
+
+If you've never heard of Tintin. You can check [its website](https://theam.github.io/tintin)
+
+Before you get started, there are a few things that this template couldn't
+provide for you. You should:
+
+-   Add a synopsis to `package.yaml`. It should be a short (one sentence)
+    explanation of your project.
+
+-   Add a description to `package.yaml`. This can be whatever you want it to
+    be.
+
+-   Add a category to `package.yaml`. A list of categories is available on
+    Hackage at <http://hackage.haskell.org/packages>.
+
+-   Rename `library/Example.hs` to whatever you want your top-level module to
+    be called. Typically this is the same as your package name but in
+    `CamelCase` instead of `kebab-case`.
+
+    -   Don't forget to rename the reference to it in
+        `executable/Main.hs`!
+
+-   If you are on an older version of Stack (<1.0.4), delete `package.yaml` and
+    remove `/*.cabal` from your `.gitignore`.
+
+Once you've done that, start working on your project with the Stack commands
+you know and love.
+
+```bash
+# Build the project.
+stack build
+
+# Run the test suite.
+stack test
+
+# Run the benchmarks.
+stack bench
+
+# Generate API documentation.
+stack haddock
+
+# Generate Tintin website. (You must have Tintin installed, see its website)
+tintin
+```
+
+Thanks again, and happy hacking!
+
+[{{ name }}]: https://github.com/{{github-username}}{{^github-username}}githubuser{{/github-username}}/{{ name }}
+
+{-# START_FILE Setup.hs #-}
+-- This script is used to build and install your package. Typically you don't
+-- need to change it. The Cabal documentation has more information about this
+-- file: <https://www.haskell.org/cabal/users-guide/installing-packages.html>.
+import qualified Distribution.Simple
+
+main :: IO ()
+main = Distribution.Simple.defaultMain
+
+{-# START_FILE benchmark/Main.hs #-}
+-- You can benchmark your code quickly and effectively with Criterion. See its
+-- website for help: <http://www.serpentine.com/criterion/>.
+import Criterion.Main
+
+main :: IO ()
+main = defaultMain [bench "const" (whnf const ())]
+
+{-# START_FILE executable/Main.hs #-}
+-- It is generally a good idea to keep all your business logic in your library
+-- and only use it in the executable. Doing so allows others to use what you
+-- wrote in their libraries.
+import qualified Example
+
+main :: IO ()
+main = Example.main
+
+{-# START_FILE library/Example.hs #-}
+-- | An example module.
+module Example (main) where
+
+-- | An example function.
+main :: IO ()
+main = return ()
+
+{-# START_FILE test-suite/Main.hs #-}
+-- Tasty makes it easy to test your code. It is a test framework that can
+-- combine many different types of tests into one suite. See its website for
+-- help: <http://documentup.com/feuerbach/tasty>.
+import qualified Test.Tasty
+-- Hspec is one of the providers for Tasty. It provides a nice syntax for
+-- writing tests. Its website has more info: <https://hspec.github.io>.
+import Test.Tasty.Hspec
+
+main :: IO ()
+main = do
+    test <- testSpec "{{ name }}" spec
+    Test.Tasty.defaultMain test
+
+spec :: Spec
+spec = parallel $ do
+    it "is trivially true" $ do
+        True `shouldBe` True
+
+{-# START_FILE doc/index.md #-}
+---
+title: Home
+---
+
+# {{name}}
+
+This is the home of the documentation for {{name}}. You should change this into an introductory text.
+
+If you haven't, check [the Tintin website](https://theam.github.io/tintin) to learn how to use it.
+
+{-# START_FILE doc/01-getting-started.md #-}
+---
+title: Getting started with {{name}}
+---
+
+# Getting started with {{name}}
+
+This is the first page of your documentation, feel free to edit it.
+
+Add more pages by creating files with the filename format `0x-title-of-the-page.md`. Where `x` increments
+with the pages.
+
+Remember to add a front matter like this to your pages:
+
+```text
+---
+title: Title of your page
+---
+```
+
