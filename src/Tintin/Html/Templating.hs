@@ -44,17 +44,14 @@ wrapPage info page = toText . renderText $ do
                     ( toHtml $ Project.title p )
 
           nav_ [class_ "navbar navbar-expand-lg tintin-doc-topbar tintin-fg-white"] $ do
-            a_ [id_ "menu-open", href_ "#menu-toggle", class_ "d-none"] $
-              img_ [ src_ $ asset "menu.png", class_ "img-fluid" ]
-            a_ [id_ "menu-close", href_ "#menu-toggle"] $
-              img_ [ src_ $ asset "close.png", class_ "img-fluid" ]
+            a_ [id_ "menu-toggle", href_ "#menu-toggle", class_ ""] $ do
+              img_ [ src_ $ asset "menu.png", class_ "img-fluid animated rotateOut" ]
+              img_ [ src_ $ asset "close.png", class_ "img-fluid animated rotateIn" ]
 
           div_ [id_ "page-content-wrapper"] $ do
             div_ [class_ "container"] $ do
               div_ [class_ "col"] $
-                div_ [ data_ "aos" "fade-left"
-                     , data_ "aos-duration" "800"
-                     , data_ "aos-once" "true"
+                div_ [ class_ "animated fadeIn"
                      ] $
                   toHtmlRaw $ Project.content page
       div_ [class_ "tintin-doc-footer clear-fix"]
@@ -92,9 +89,7 @@ wrapHome info page = toText . renderText $ do
       navbar
 
     section_ [ id_ "content"
-             , data_ "aos" "fade-up"
-             , data_ "aos-duration" "800"
-             , data_ "aos-once" "true"
+             , class_ "animated fadeIn"
              ] $ do
       div_ [class_ "container"] $ do
         div_ [class_ "content"
@@ -140,9 +135,6 @@ tintinHeader info@Project.Info {..} Project.Page {..} =
   head_ $ do
     title_ ( toHtml $ name <> " - " <> title )
     link_ [ rel_ "stylesheet"
-          , href_ "https://cdn.rawgit.com/michalsnik/aos/2.1.1/dist/aos.css"
-          ]
-    link_ [ rel_ "stylesheet"
           , href_ "https://fonts.googleapis.com/css?family=IBM+Plex+Sans|Montserrat:500"
           ]
     link_ [ rel_ "stylesheet"
@@ -150,6 +142,9 @@ tintinHeader info@Project.Info {..} Project.Page {..} =
           ]
     link_ [ rel_ "stylesheet"
           , href_ "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow-night.min.css"
+          ]
+    link_ [ rel_ "stylesheet"
+          , href_ "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css"
           ]
     link_ [ rel_ "shortcut icon"
           , href_ ( asset $ "favicon-"
@@ -168,25 +163,11 @@ tintinPostInit = do
   script_ [ src_ "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"] ( "" :: Text )
   script_ [ src_ "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/haskell.min.js"] ("" :: Text)
   script_ [ src_ "https://cdn.rawgit.com/icons8/bower-webicon/v0.10.7/jquery-webicon.min.js" ] ( "" :: Text )
-  script_ "$(function() { AOS.init(); })"
-  script_ [ src_ "https://cdn.rawgit.com/michalsnik/aos/2.1.1/dist/aos.js"] ("" :: Text)
-  script_ [ src_ "https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.min.js" ] ("" :: Text)
   script_ "hljs.initHighlightingOnLoad()"
-  script_ "$(function () {$(\"#menu-open\").click(function(e) {\
+  script_ "$(function () {$(\"#menu-toggle\").click(function(e) {\
         \e.preventDefault();\
         \$(\"#wrapper\").toggleClass(\"toggled\");\
-        \anime({targets: \"#menu-open img\", scale: 0.125, rotate: '0deg'});\
-        \$(\"#menu-close\").toggleClass(\"d-none\");\
-        \$(\"#menu-open\").toggleClass(\"d-none\");\
-        \anime({targets: \"#menu-close img\", scale: 1, rotate: '180deg'});\
-    \})});"
-  script_ "$(function () {$(\"#menu-close\").click(function(e) {\
-        \e.preventDefault();\
-        \$(\"#wrapper\").toggleClass(\"toggled\");\
-        \anime({targets: \"#menu-close img\", scale: 0.125, rotate: '0deg'});\
-        \$(\"#menu-close\").toggleClass(\"d-none\");\
-        \$(\"#menu-open\").toggleClass(\"d-none\");\
-        \anime({targets: \"#menu-open img\", scale: 1, rotate: '180deg'});\
+        \$(\"#menu-toggle img\").toggleClass(\"rotateIn rotateOut\");\
     \})});"
 
 
