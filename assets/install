@@ -1,0 +1,5 @@
+#!/bin/bash
+
+stack exec --no-ghc-package-path cabal update
+stack exec --no-ghc-package-path cabal install inliterate
+stack exec --no-ghc-package-path cabal install tintin
