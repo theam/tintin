@@ -98,7 +98,7 @@ getFieldValue field txt = do
   mt1 <- T.stripPrefix (field <> ":") $ T.strip mt0
   pure $ T.strip mt1
   
-                          
+getAuthor :: Text -> Text                          
 getAuthor txt =
     txt
     |> (T.stripPrefix "\"" >=> T.stripSuffix "\"")
@@ -106,6 +106,7 @@ getAuthor txt =
     |> T.takeWhile (/= '/')
 
 
+parseGithubUrl :: Text -> Text
 parseGithubUrl txt = fromMaybe txt $ 
   T.stripPrefix "\"" txt >>= T.stripSuffix "\""
 
