@@ -16,15 +16,11 @@ import Text.Read (read)
 
 import qualified Universum.Debug as Debug
 
--- loadInfo :: ( Has L.Capability eff
---             , Has FS.Capability eff
---             )
---          => [HtmlFile.Value]
---          -> Effectful eff Project.Info
-loadInfo :: ( Has FS.Capability eff
-            , Has L.Capability eff)
+loadInfo :: ( Has L.Capability eff
+            , Has FS.Capability eff
+            )
          => [HtmlFile.Value]
-         -> ReaderT eff IO Project.Info
+         -> Effectful eff Project.Info
 loadInfo htmlFiles = do
   let pages = map (\HtmlFile.Value {..} -> Project.Page title content filename) htmlFiles
   FS.Path currentDir <- FS.currentDirectory

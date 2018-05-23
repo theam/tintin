@@ -7,10 +7,11 @@ import Tintin.Core
 
 import qualified Tintin.Capabilities.Logging as Logging
 import qualified Tintin.Capabilities.Filesystem as Filesystem
+import Tintin.Capabilities.Filesystem (getPathsWith, Extension(..), Path(..), deleteIfExists)
 import qualified Tintin.Capabilities.Process as Process
 import qualified Tintin.Parse as Parse
 import qualified Tintin.Render as Render
-import qualified Tintin.ConfigurationLoading as ConfigurationLoading
+import qualified Tintin.ConfigurationLoading as CL
 
 
 runApp :: ( Has Logging.Capability eff
@@ -25,9 +26,9 @@ runApp outputDirectory = do
   filenames <- getDocumentationFilenames docDir
 
   Parse.docs docDir filenames
-   |>> Render.perform
-   |>> ConfigurationLoading.loadInfo
-   |>> Render.writeOutput outputDirectory
+   >>= Render.perform
+   >>= CL.loadInfo
+   >>= Render.writeOutput outputDirectory
 
 
 cleanUp :: ( Has Logging.Capability eff
@@ -37,8 +38,7 @@ cleanUp :: ( Has Logging.Capability eff
         -> Effectful eff ()
 cleanUp (OutputDirectory p) = do
   Logging.debug "Cleaning output directory"
-  Filesystem.deleteIfExists (Filesystem.Path p)
-
+  deleteIfExists (Path p)
 
 
 getDocumentationFilenames :: ( Has Logging.Capability eff
@@ -48,10 +48,7 @@ getDocumentationFilenames :: ( Has Logging.Capability eff
                           -> Effectful eff [Filesystem.Path]
 getDocumentationFilenames (DocumentationDirectory docDir) = do
   Logging.debug ( "Reading documentation files at " <> docDir )
-  Filesystem.Path docDir
-   |>  Filesystem.list
-   |$> Filesystem.getPathsWith (Filesystem.Extension ".md")
-
+  getPathsWith (Extension ".md") <$> Filesystem.list (Path docDir)
 
 
 getDocumentationDirectory :: Has Filesystem.Capability eff
