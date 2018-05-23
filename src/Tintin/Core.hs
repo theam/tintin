@@ -6,7 +6,6 @@ module Tintin.Core
 
   , (|>)
   , (|$>)
-  -- , (|>>)
 
   , runEffects
   )
@@ -41,5 +40,3 @@ type Pure context result =
 (|$>) :: Functor f => f a -> (a -> b) -> f b
 (|$>) = (<&>)
 
--- (|>>) :: Monad m => m a -> (a -> m b) -> m b
--- (|>>) = (>>=)
