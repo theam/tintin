@@ -4,9 +4,10 @@ where
 
 import Tintin.Core
 import qualified Tintin.Errors as E (showAndDie)
-import qualified Tintin.Capabilities.Logging as L (Capability(..), debug)
--- import qualified Tintin.Capabilities.Filesystem as Filesystem
-import qualified Tintin.Capabilities.Filesystem as FS (Path(..), Capability(..), currentDirectory, readFile, writeFile, doesExist, list)
+import qualified Tintin.Capabilities.Logging as Logging 
+import Tintin.Capabilities.Logging (debug)
+import qualified Tintin.Capabilities.Filesystem as FileSystem
+import qualified Tintin.Capabilities.Filesystem as FS (Path(..), readFile, writeFile, doesExist, currentDirectory, list)
 import qualified Tintin.Domain.HtmlFile as HtmlFile
 import qualified Tintin.Domain.Project as Project
 
@@ -16,8 +17,9 @@ import Text.Read (read)
 
 import qualified Universum.Debug as Debug
 
-loadInfo :: ( Has L.Capability eff
-            , Has FS.Capability eff
+
+loadInfo :: ( Has Logging.Capability eff
+            , Has FileSystem.Capability eff
             )
          => [HtmlFile.Value]
          -> Effectful eff Project.Info
@@ -34,7 +36,7 @@ loadInfo htmlFiles = do
 
     Just p -> do
       let tintinPath = FS.Path $ currentDir <> "/.tintin.yml"
-      L.debug "Reading project info"
+      debug "Reading project info"
       projectInfoFile <- FS.readFile p
       tintinExists    <- FS.doesExist tintinPath
       unless tintinExists $
