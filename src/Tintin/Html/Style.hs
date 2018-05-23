@@ -4,7 +4,6 @@ import Tintin.Core as Core hiding (( & ), rem, (|>))
 
 import Clay
 import qualified Clay.Media as Media
-import Clay.Selector
 
 style :: Text
 style = toText . render $ do
@@ -103,20 +102,32 @@ style = toText . render $ do
         display block
         textDecoration none
         fontWeight bold
+      ".tintin-fg-disabled" ? do
         ":hover" & do
-          textDecoration none
-          color white
-        ":active" & do
-          textDecoration none
-          color white
-        ":focus" & do
-          textDecoration none
-          color white
+           "mix-blend-mode" -: "normal"
+           Clay.filter $ invert (pct 0)
+           textDecoration none
+           color black
+      ".tintin-fg-active" ? do
+        ":hover" & do
+           "mix-blend-mode" -: "normal"
+           Clay.filter $ invert (pct 0)
+           textDecoration none
+           color white
+
+  "#menu-toggle" ? do
+    position absolute
+    img ? do
+      position absolute
+      left (px 0)
+    ".rotateIn" ? do
+      zIndex 999
 
   ".tintin-doc-topbar" ? do
-    height (rem 5)
+    height (rem 3)
     a ? do
       marginLeft (rem 1)
+      marginTop (rem 0)
       width (rem 1.5)
       img ? do
         Clay.filter (invert $ pct 70)
@@ -135,7 +146,6 @@ style = toText . render $ do
     marginLeft (rem $ -0.25)
     height (rem 1.75)
     Clay.filter (invert (pct 75))
-    -- Clay.filter (brightness 0.75)
 
   ".tintin-doc-footer" ? do
     bottom (px 0)
@@ -149,9 +159,6 @@ style = toText . render $ do
 
   "#content" ? do
     minHeight (pct 95)
-
-  ".tintin-generated-with" ? do
-    pass
 
   ".sidebar-nav" |> ".sidebar-brand" ? do
     height (rem 3)
@@ -167,6 +174,34 @@ style = toText . render $ do
   ".tintin-navbar" ? do
     fontWeight bold
     backgroundColor (rgba 255 255 255 0.15)
+    ".left-part" ? do
+      important $ paddingLeft (px 0)
+    ul ? do
+      marginTop (rem 1)
+      listStyleType none
+      li ? do
+        marginRight (rem 1)
+        display inline
+        a ? do
+          color black
+          Clay.filter $ invert (pct 35)
+          "mix-blend-mode" -: "difference"
+        "a:hover" ? do
+          "mix-blend-mode" -: "normal"
+          Clay.filter $ invert (pct 0)
+          textDecoration none
+          color black
+
+    ".tintin-navbar-active" ? do
+      a ? do
+        "mix-blend-mode" -: "normal"
+        Clay.filter $ invert (pct 0)
+        color white
+      "a:hover" ? do
+        "mix-blend-mode" -: "normal"
+        Clay.filter $ invert (pct 0)
+        textDecoration none
+        color white
 
   ".tintin-bg-70" ? do
     backgroundColor (rgba 255 255 255 0.15)
@@ -182,8 +217,11 @@ style = toText . render $ do
   ".tintin-fg-active" ? do
     color (rgba 255 255 255 1.0)
 
+
   ".tintin-fg-disabled" ? do
-    color (rgba 255 255 255 0.35)
+    color black
+    Clay.filter $ invert (pct 35)
+    "mix-blend-mode" -: "difference"
 
   footer ? do
     position relative
@@ -213,7 +251,6 @@ style = toText . render $ do
     "#page-content-wrapper" ? do
       padding (px 20) (px 20) (px 20) (px 20)
       position relative
-
 
 
 

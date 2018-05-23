@@ -18,17 +18,25 @@ The installation is straightforward:
 wget -qO- https://get.haskellstack.org/ | sh
 ```
 
-### Inliterate
+## Installing
 
-Inliterate is the rendering mechanism for the documentation. Add the following packages
-to the `extra-deps` section of your `stack.yaml` file:
+You can install Tintin by issuing the following command:
 
 ```bash
-- inliterate-0.1.0
-- lucid-extras-0.1.0.0
-- plotlyhs-0.2
+wget -qO- https://github.com/theam/tintin/raw/master/assets/install | sh
 ```
 
-After that perform a `stack install inliterate --stack-yaml <your stack.yaml file>`.
+We invite you to [check the installation script](https://github.com/theam/tintin/blob/master/assets/install)
+before you run it.
+
+## Creating a new project with the Tintin template
+
+We provide a Stack template for making your life easier when creating projects with Tintin:
+
+```bash
+stack new --resolver nightly <your-project-name> https://github.com/theam/tintin/raw/master/assets/template.hsfiles
+```
+
+_Note: The `--resolver nightly` is required, as the tintin dependencies are not in LTS yet._
 
 You are ready to roll, proceed to [documenting your project](02-documenting-your-project.html)!

@@ -17,7 +17,6 @@ import Text.Read (read)
 
 import qualified Universum.Debug as Debug
 
-
 loadInfo :: ( Has Logging.Capability eff
             , Has FileSystem.Capability eff
             )
