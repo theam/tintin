@@ -48,6 +48,7 @@ style = toText . render $ do
     marginLeft (rem 1.2504)
 
   ".cover-heading-subtitle" ? do
+    marginTop (rem 3)
     fontSize (rem 1.953)
 
   ".vertical-auto" ? do
