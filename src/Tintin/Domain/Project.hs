@@ -2,6 +2,9 @@ module Tintin.Domain.Project where
 
 import Tintin.Core
 
+
+data Project
+
 data Color
   = Purple
   | LightGreen

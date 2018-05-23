@@ -1,11 +1,13 @@
 module Tintin.Errors
-  ( showAndDie
+  ( Errors
+  , showAndDie
   )
 where
 
 import Tintin.Core
-import qualified Tintin.Capabilities.Logging as Logging
+require Tintin.Capabilities.Logging
 
+data Errors
 
 showAndDie :: ( Has Logging.Capability eff
               , Show error

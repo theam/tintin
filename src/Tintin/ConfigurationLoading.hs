@@ -1,26 +1,32 @@
 module Tintin.ConfigurationLoading
-  ( loadInfo )
+  ( ConfigurationLoading
+  , loadInfo
+  )
 where
 
-import Tintin.Core
-import qualified Tintin.Errors as Errors
-import qualified Tintin.Capabilities.Logging as Logging
-import qualified Tintin.Capabilities.Filesystem as Filesystem
-import qualified Tintin.Domain.HtmlFile as HtmlFile
-import qualified Tintin.Domain.Project as Project
+require Tintin.Errors
+require Tintin.Capabilities.Logging
+require Tintin.Capabilities.Filesystem
+require Tintin.Domain.HtmlFile
+require Tintin.Domain.Project
 
-import qualified Data.Text as Text
+require Data.Text
+
+import Tintin.Core
 import Universum.Unsafe (fromJust)
 import Text.Read (read)
+
+
+data ConfigurationLoading
 
 loadInfo :: ( Has Logging.Capability eff
             , Has Filesystem.Capability eff
             )
-         => [HtmlFile.Value]
+         => [HtmlFile]
          -> Effectful eff Project.Info
 loadInfo htmlFiles = do
   let pages = htmlFiles
-              |> map (\HtmlFile.Value {..} -> Project.Page title content filename)
+              |> map (\HtmlFile.HtmlFile {..} -> Project.Page title content filename)
   Filesystem.Path currentDir <- Filesystem.currentDirectory
   files <- Filesystem.list (Filesystem.Path currentDir)
   let packageYamlFile = find isPackageYaml files

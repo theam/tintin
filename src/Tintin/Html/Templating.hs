@@ -3,10 +3,12 @@ module Tintin.Html.Templating where
 import Lucid
 
 import Tintin.Core
-import qualified Tintin.Html.Style as Style
-import qualified Tintin.Domain.Project as Project
+require Tintin.Html.Style
+require Tintin.Domain.Project
 
-import qualified Data.Text as Text
+require Data.Text
+
+data Templating
 
 
 asset :: Text -> Text

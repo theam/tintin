@@ -1,5 +1,6 @@
 module Tintin.Capabilities.Process
-  ( Capability
+  ( Process
+  , Capability
   , CommandName(..)
   , Arguments(..)
   , StdOut(..)
@@ -15,6 +16,8 @@ import Tintin.Capabilities
 
 import System.Exit (ExitCode(..))
 
+
+data Process
 
 newtype CommandName = CommandName Text
 newtype Arguments   = Arguments [Text]

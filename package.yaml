@@ -20,6 +20,10 @@ category:            Documentation
 # common to point users to the README.md file.
 description:         Please see the website <https://theam.github.io/tintin>
 
+ghc-options:
+  - -F
+  - -pgmF requirepp
+
 default-extensions:
 - DeriveGeneric
 - RecordWildCards

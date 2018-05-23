@@ -5,12 +5,12 @@ where
 
 import Tintin.Core
 
-import qualified Tintin.Capabilities.Logging as Logging
-import qualified Tintin.Capabilities.Filesystem as Filesystem
-import qualified Tintin.Capabilities.Process as Process
-import qualified Tintin.Parse as Parse
-import qualified Tintin.Render as Render
-import qualified Tintin.ConfigurationLoading as ConfigurationLoading
+require Tintin.Capabilities.Logging
+require Tintin.Capabilities.Filesystem
+require Tintin.Capabilities.Process
+require Tintin.Parse
+require Tintin.Render
+require Tintin.ConfigurationLoading
 
 
 runApp :: ( Has Logging.Capability eff
