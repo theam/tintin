@@ -21,9 +21,12 @@ import qualified Universum.Debug as Debug
 --             )
 --          => [HtmlFile.Value]
 --          -> Effectful eff Project.Info
+loadInfo :: ( Has FS.Capability eff
+            , Has L.Capability eff)
+         => [HtmlFile.Value]
+         -> ReaderT eff IO Project.Info
 loadInfo htmlFiles = do
-  let pages = htmlFiles
-              |> map (\HtmlFile.Value {..} -> Project.Page title content filename)
+  let pages = map (\HtmlFile.Value {..} -> Project.Page title content filename) htmlFiles
   FS.Path currentDir <- FS.currentDirectory
   files <- FS.list (FS.Path currentDir)
   let packageYamlFile = find isPackageYaml files
@@ -42,13 +45,13 @@ loadInfo htmlFiles = do
         FS.writeFile tintinPath "color: blue\n"
       tintinFile <- FS.readFile tintinPath
       let
-        projectName     = projectInfoFile |> getFieldValue "name"
-        projectSynopsis = projectInfoFile |> getFieldValue "synopsis"
-        projectGithub   = (projectInfoFile |> getFieldValue "github")
-                          <|> (projectInfoFile |> getFieldValue "location")
-        projectAuthor   = projectGithub |$> getAuthor
-        tintinColor     = tintinFile |> getFieldValue "color"
-        tintinLogo      = tintinFile |> getFieldValue "logo"
+        projectName     = getFieldValue "name" projectInfoFile
+        projectSynopsis = getFieldValue "synopsis" projectInfoFile
+        projectGithub   = getFieldValue "github" projectInfoFile
+                          <|> getFieldValue "location" projectInfoFile
+        projectAuthor   = getAuthor <$> projectGithub 
+        tintinColor     = getFieldValue "color" tintinFile
+        tintinLogo      = getFieldValue "logo" tintinFile
       when (isNothing projectName) (E.showAndDie ["Project must have a name. Please set it in package.yaml or *.cabal."])
       when (isNothing projectSynopsis) (E.showAndDie ["Project must have a synopsis. Please set it in package.yaml or *.cabal."])
       when (isNothing projectGithub) (E.showAndDie ["Project must be hosted in a Github repository. Please set it in package.yaml or *.cabal."])
@@ -64,7 +67,6 @@ loadInfo htmlFiles = do
         , logoUrl = tintinLogo
         , pages = pages
         }
-
  where
   isPackageYaml (FS.Path p) =
     p == "package.yaml"
@@ -74,23 +76,9 @@ loadInfo htmlFiles = do
 
 makeColor :: Text -> Project.Color
 makeColor txt =
-    let capitalLetter = txt
-                        |> T.head
-                        |> T.singleton
-                        |> T.toUpper
-        restOfText    = txt
-                        |> T.tail
-    in  (capitalLetter <> restOfText)
-         |> toString
-         |> read
-
--- getFieldValue field txt = txt
---                           |> lines
---                           |> filter (\t -> field `T.isPrefixOf` T.strip t)
---                           |> safeHead
---                           |$> T.strip
---                           >>= T.stripPrefix (field <> ":")
---                           |$> T.strip
+    let capitalLetter = T.toUpper $ T.singleton $ T.head txt
+        restOfText    = T.tail txt
+    in  read $ toString (capitalLetter <> restOfText)
 
 getFieldValue :: Text -> Text -> Maybe Text
 getFieldValue field txt = do
@@ -98,21 +86,13 @@ getFieldValue field txt = do
   mt1 <- T.stripPrefix (field <> ":") $ T.strip mt0
   pure $ T.strip mt1
   
-getAuthor :: Text -> Text                          
-getAuthor txt =
-    txt
-    |> (T.stripPrefix "\"" >=> T.stripSuffix "\"")
-    |> fromMaybe txt
-    |> T.takeWhile (/= '/')
-
+getAuthor :: Text -> Text
+getAuthor txt = T.takeWhile (/= '/') $
+  fromMaybe txt $ (T.stripPrefix "\"" >=> T.stripSuffix "\"") txt
 
 parseGithubUrl :: Text -> Text
 parseGithubUrl txt = fromMaybe txt $ 
   T.stripPrefix "\"" txt >>= T.stripSuffix "\""
 
--- parseGithubUrl txt =
---     txt
---     |>  T.stripPrefix "\""
---     >>= T.stripSuffix "\""
---     |>  fromMaybe txt
+
 
