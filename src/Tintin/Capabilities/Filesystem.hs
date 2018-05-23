@@ -1,5 +1,6 @@
 module Tintin.Capabilities.Filesystem
-  ( Capability
+  ( Filesystem
+  , Capability
   , Path(..)
   , Extension(..)
 
@@ -20,8 +21,10 @@ import Tintin.Core hiding (list, local, readFile, writeFile)
 import qualified Tintin.Core as Core
 import Tintin.Capabilities
 
-import qualified Data.Text as Text
+require Data.Text
 
+
+data Filesystem
 
 newtype Path      = Path Text deriving ( Show, Ord, Eq )
 newtype Extension = Extension Text

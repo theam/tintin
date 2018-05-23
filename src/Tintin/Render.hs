@@ -1,23 +1,26 @@
 module Tintin.Render where
 
 import Tintin.Core
-import Tintin.Capabilities.Logging as Logging
-import Tintin.Capabilities.Filesystem as Filesystem
-import Tintin.Capabilities.Process as Process
-import Tintin.Domain.HtmlFile as HtmlFile
-import Tintin.Domain.DocumentationFile as DocumentationFile
-import Tintin.Domain.Project as Project
-import Tintin.Html.Templating as Templating
-import Tintin.Errors as Errors
 
-import qualified Data.Text as Text
+require Tintin.Capabilities.Logging
+require Tintin.Capabilities.Filesystem
+require Tintin.Capabilities.Process
+require Tintin.Domain.HtmlFile
+require Tintin.Domain.DocumentationFile
+require Tintin.Domain.Project
+require Tintin.Html.Templating
+require Tintin.Errors
+
+require Data.Text
+
+data Render
 
 perform :: ( Has Logging.Capability eff
            , Has Filesystem.Capability eff
            , Has Process.Capability eff
            )
-        => [DocumentationFile.Value]
-        -> Effectful eff [HtmlFile.Value]
+        => [DocumentationFile]
+        -> Effectful eff [HtmlFile]
 perform docFiles = do
   Logging.debug "Rendering"
   (errors, htmlFiles) <- docFiles

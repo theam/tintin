@@ -1,20 +1,24 @@
 module Tintin.Parse
-  ( docs )
+  ( Parse
+  , docs
+  )
 where
 
-import Tintin.Core
-import qualified Tintin.Capabilities.Logging as Logging
-import qualified Tintin.Capabilities.Filesystem as Filesystem
-import qualified Tintin.Domain.DocumentationFile as DocumentationFile
-import qualified Tintin.Errors as Errors
+import  Tintin.Core
+require Tintin.Capabilities.Logging
+require Tintin.Capabilities.Filesystem
+require Tintin.Domain.DocumentationFile
+require Tintin.Errors
 
+
+data Parse
 
 docs :: ( Has Logging.Capability eff
         , Has Filesystem.Capability eff
         )
      => DocumentationDirectory
      -> [Filesystem.Path]
-     -> Effectful eff [DocumentationFile.Value]
+     -> Effectful eff [DocumentationFile]
 docs docDir filenames = do
   Logging.debug "Parsing documentation"
   (errors, docFiles) <- filenames
@@ -29,7 +33,7 @@ readAndParse :: ( Has Logging.Capability eff
                 )
              => DocumentationDirectory
              -> Filesystem.Path
-             -> Effectful eff (Either DocumentationFile.ParseError DocumentationFile.Value)
+             -> Effectful eff (Either DocumentationFile.ParseError DocumentationFile)
 readAndParse ( DocumentationDirectory d ) ( Filesystem.Path f ) = do
   contents <- Filesystem.readFile ( Filesystem.Path $ d <> "/" <> f)
   return $ DocumentationFile.new (DocumentationFile.Filename f) contents

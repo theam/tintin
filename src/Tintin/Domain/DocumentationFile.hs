@@ -1,23 +1,23 @@
 module Tintin.Domain.DocumentationFile where
 
-import Tintin.Core
-
 import qualified Data.Frontmatter as FMParser
 
-import Tintin.Domain.FrontMatter as FrontMatter
+import Tintin.Core
+
+require Tintin.Domain.FrontMatter
 
 
 newtype Filename   = Filename Text
 newtype ParseError = ParseError Text deriving Show
 
-data Value = Value
+data DocumentationFile = DocumentationFile
   { filename    :: Text
   , content     :: Text
   , frontMatter :: FrontMatter
   } deriving Show
 
 
-new :: Filename -> Text -> Either ParseError Value
+new :: Filename -> Text -> Either ParseError DocumentationFile
 new (Filename filename) rawText =
   case parse rawText of
     FMParser.Fail _ _ err ->
@@ -27,7 +27,7 @@ new (Filename filename) rawText =
            )
 
     FMParser.Done source frontMatter ->
-      Right $ Value
+      Right $ DocumentationFile
         { filename    = filename
         , content     = decodeUtf8 @Text @ByteString source
         , frontMatter = frontMatter

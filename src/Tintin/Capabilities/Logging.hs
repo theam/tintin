@@ -1,5 +1,6 @@
 module Tintin.Capabilities.Logging
-  ( Capability
+  ( Logging
+  , Capability
   , log
   , err
   , debug
@@ -12,6 +13,7 @@ where
 import Tintin.Core
 import Tintin.Capabilities
 
+data Logging
 
 {- |
 Capability for our context to be able to log from any place where it is available:

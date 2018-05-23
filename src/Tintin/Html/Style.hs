@@ -5,6 +5,8 @@ import Tintin.Core as Core hiding (( & ), rem, (|>))
 import Clay
 import qualified Clay.Media as Media
 
+data Style
+
 style :: Text
 style = toText . render $ do
   html ? do
