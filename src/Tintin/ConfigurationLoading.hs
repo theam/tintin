@@ -84,13 +84,20 @@ makeColor txt =
          |> toString
          |> read
 
-getFieldValue field txt = txt
-                          |> lines
-                          |> filter (\t -> field `T.isPrefixOf` T.strip t)
-                          |> safeHead
-                          |$> T.strip
-                          >>= T.stripPrefix (field <> ":")
-                          |$> T.strip
+-- getFieldValue field txt = txt
+--                           |> lines
+--                           |> filter (\t -> field `T.isPrefixOf` T.strip t)
+--                           |> safeHead
+--                           |$> T.strip
+--                           >>= T.stripPrefix (field <> ":")
+--                           |$> T.strip
+
+getFieldValue :: Text -> Text -> Maybe Text
+getFieldValue field txt = do
+  mt0 <- safeHead $ filter (\t -> field `T.isPrefixOf` T.strip t) $ lines txt
+  mt1 <- T.stripPrefix (field <> ":") $ T.strip mt0
+  pure $ T.strip mt1
+  
                           
 getAuthor txt =
     txt
@@ -99,7 +106,7 @@ getAuthor txt =
     |> T.takeWhile (/= '/')
 
 
-parseGithubUrl txt = fromMaybe txt $ do 
+parseGithubUrl txt = fromMaybe txt $ 
   T.stripPrefix "\"" txt >>= T.stripSuffix "\""
 
 -- parseGithubUrl txt =
