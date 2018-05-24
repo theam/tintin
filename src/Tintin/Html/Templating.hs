@@ -23,42 +23,43 @@ wrap info page =
 
 wrapPage :: Project.Info -> Project.Page -> Text
 wrapPage info page = toText . renderText $ do
-  tintinHeader info page
-  body_ [class_ "h-100 tintin-fg-black tintin-bg-white"] $ do
-    div_ [id_ "main-container", class_ "h-100"] $ do
-      section_ [ id_ "content"] $ do
-        div_ [id_ "wrapper", class_ "toggled"] $ do
-          div_ [id_ "sidebar-wrapper", class_ $ "h-100 tintin-bg-" <> bgColorOf info] $ do
-            div_ [ class_ "h-100 tintin-bg-70"] ( p_ "" )
-            ul_ [ class_ "sidebar-nav"] $ do
-              li_ [ class_ $ "sidebar-brand d-flex tintin-bg-" <> bgColorOf info] $ do
-                a_ [href_ "index.html", class_ "align-self-center tintin-fg-white"] $ do
-                  case Project.logoUrl info of
-                    Nothing -> toHtml $ Project.name info
-                    Just url -> img_ [src_ url]
-              forM_ (filter (\p -> "index.html" /= Project.filename p ) (Project.pages info) ) $ \p -> do
-                li_ $ do
-                  let classes =
-                        if Project.title page == Project.title p
-                        then "tintin-fg-active"
-                        else "tintin-fg-disabled"
-                  a_ [href_ $ Project.filename p, class_ classes] $ do
-                    ( toHtml $ Project.title p )
+  doctypehtml_ $ do
+    tintinHeader info page
+    body_ [class_ "h-100 tintin-fg-black tintin-bg-white"] $ do
+      div_ [id_ "main-container", class_ "h-100"] $ do
+        section_ [ id_ "content"] $ do
+          div_ [id_ "wrapper", class_ "toggled"] $ do
+            div_ [id_ "sidebar-wrapper", class_ $ "h-100 tintin-bg-" <> bgColorOf info] $ do
+              div_ [ class_ "h-100 tintin-bg-70"] ( p_ "" )
+              ul_ [ class_ "sidebar-nav"] $ do
+                li_ [ class_ $ "sidebar-brand d-flex tintin-bg-" <> bgColorOf info] $ do
+                  a_ [href_ "index.html", class_ "align-self-center tintin-fg-white"] $ do
+                    case Project.logoUrl info of
+                      Nothing -> toHtml $ Project.name info
+                      Just url -> img_ [src_ url]
+                forM_ (filter (\p -> "index.html" /= Project.filename p ) (Project.pages info) ) $ \p -> do
+                  li_ $ do
+                    let classes =
+                          if Project.title page == Project.title p
+                          then "tintin-fg-active"
+                          else "tintin-fg-disabled"
+                    a_ [href_ $ Project.filename p, class_ classes] $ do
+                      ( toHtml $ Project.title p )
 
-          nav_ [class_ "navbar navbar-expand-lg tintin-doc-topbar tintin-fg-white"] $ do
-            a_ [id_ "menu-toggle", href_ "#menu-toggle", class_ ""] $ do
-              img_ [ src_ $ asset "menu.png", class_ "img-fluid animated rotateOut" ]
-              img_ [ src_ $ asset "close.png", class_ "img-fluid animated rotateIn" ]
+            nav_ [class_ "navbar navbar-expand-lg tintin-doc-topbar tintin-fg-white"] $ do
+              a_ [id_ "menu-toggle", href_ "#menu-toggle", class_ ""] $ do
+                img_ [ src_ $ asset "menu.png", class_ "img-fluid animated rotateOut" ]
+                img_ [ src_ $ asset "close.png", class_ "img-fluid animated rotateIn" ]
 
-          div_ [id_ "page-content-wrapper"] $ do
-            div_ [class_ "container"] $ do
-              div_ [class_ "col"] $
-                div_ [ class_ "animated fadeIn"
-                     ] $
-                  toHtmlRaw $ Project.content page
-      div_ [class_ "tintin-doc-footer clear-fix"]
-        siteGenerated
-    tintinPostInit
+            div_ [id_ "page-content-wrapper"] $ do
+              div_ [class_ "container"] $ do
+                div_ [class_ "col"] $
+                  div_ [ class_ "animated fadeIn"
+                       ] $
+                    toHtmlRaw $ Project.content page
+        div_ [class_ "tintin-doc-footer clear-fix"]
+          siteGenerated
+      tintinPostInit
 
 siteGenerated = do
   div_ [class_ "float-right"] $ do
@@ -74,32 +75,33 @@ siteGenerated = do
 
 wrapHome :: Project.Info -> Project.Page -> Text
 wrapHome info page = toText . renderText $ do
-  tintinHeader info page
-  body_ [class_ "tintin-fg-black tintin-bg-white"] $ do
+  doctypehtml_ $ do
+    tintinHeader info page
+    body_ [class_ "tintin-fg-black tintin-bg-white"] $ do
 
-    div_ [class_ $ "tintin-navigation tintin-bg-" <> bgColorOf info] $ do
-      div_ [class_ "cover-container d-flex p-3 mx-auto flex-column tintin-fg-white"] $ do
-        main_ [role_ "main", class_ "masthead mb-auto"] $ do
-          div_ [class_ "container"] $ do
-            div_ [class_ "row align-items-center"] $ do
-              div_ [class_ "col", id_ "header-container"] $ do
-                case Project.logoUrl info of
-                  Just url -> img_ [ src_ url, class_ "cover-heading" ]
-                  Nothing -> h1_ [class_ "cover-heading"] $ toHtml (Project.name info)
-                p_ [class_ "cover-heading-subtitle"] (toHtml $ Project.synopsis info)
+      div_ [class_ $ "tintin-navigation tintin-bg-" <> bgColorOf info] $ do
+        div_ [class_ "cover-container d-flex p-3 mx-auto flex-column tintin-fg-white"] $ do
+          main_ [role_ "main", class_ "masthead mb-auto"] $ do
+            div_ [class_ "container"] $ do
+              div_ [class_ "row align-items-center"] $ do
+                div_ [class_ "col", id_ "header-container"] $ do
+                  case Project.logoUrl info of
+                    Just url -> img_ [ src_ url, class_ "cover-heading" ]
+                    Nothing -> h1_ [class_ "cover-heading"] $ toHtml (Project.name info)
+                  p_ [class_ "cover-heading-subtitle"] (toHtml $ Project.synopsis info)
 
-      navbar
+        navbar
 
-    section_ [ id_ "content"
-             , class_ "animated fadeIn"
-             ] $ do
-      div_ [class_ "container"] $ do
-        div_ [class_ "content"
-             ] $
-          div_ [] $ do
-            toHtmlRaw $ Project.content page
-    footer
-    tintinPostInit
+      section_ [ id_ "content"
+               , class_ "animated fadeIn"
+               ] $ do
+        div_ [class_ "container"] $ do
+          div_ [class_ "content"
+               ] $
+            div_ [] $ do
+              toHtmlRaw $ Project.content page
+      footer
+      tintinPostInit
  where
   navbar =
     nav_ [ class_ "tintin-navbar"
@@ -154,6 +156,9 @@ tintinHeader info@Project.Info {..} Project.Page {..} =
                   <> ".ico"
                   )
           ]
+    link_ [ rel_ "stylesheet"
+          , href_ "https://cdn.jsdelivr.net/npm/katex@0.10.0-alpha/dist/katex.min.css"
+          ]
     style_ Style.style
 
 
@@ -171,8 +176,9 @@ tintinPostInit = do
         \$(\"#wrapper\").toggleClass(\"toggled\");\
         \$(\"#menu-toggle img\").toggleClass(\"rotateIn rotateOut\");\
     \})});"
-
-
+  script_ [src_ "https://cdn.jsdelivr.net/npm/katex@0.10.0-alpha/dist/katex.min.js"] ("" :: Text)
+  script_ [src_ "https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/contrib/auto-render.min.js"] ("" :: Text)
+  script_ "renderMathInElement(document.body);"
 bgColorOf :: Project.Info -> Text
 bgColorOf info =
   Project.color info
