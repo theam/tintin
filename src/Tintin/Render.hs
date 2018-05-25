@@ -27,7 +27,7 @@ perform docFiles = do
                          |>  map  HtmlFile.fromDocumentationFile
                          |>  mapM HtmlFile.run
                          |$> partitionEithers
-  unless (null errors) (Errors.showAndDie errors)
+  unless (null errors) (Errors.textDie (HtmlFile.showCompilationError <$> errors))
   return htmlFiles
 
 

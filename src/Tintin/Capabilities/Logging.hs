@@ -68,5 +68,5 @@ mute :: Capability
 mute = Capability
   { _log = return . const ()
   , _debug = return . const ()
-  , _err = return . const ()
+  , _err   = putTextLn . ("[ERROR] - " <>)
   }
