@@ -10,6 +10,10 @@ require Data.Text
 
 newtype CompilationError = CompilationError Text deriving Show
 
+showCompilationError :: CompilationError
+                     -> Text
+showCompilationError (CompilationError e) = "CompilationError\n" <> e
+
 data HtmlFile = HtmlFile
   { filename :: Text
   , title    :: Text
