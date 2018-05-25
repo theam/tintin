@@ -33,6 +33,7 @@ Please submit a PR if you are using Tintin!
 |λ|λ|
 |-|-|
 |[Tintin](https://theam.github.io/tintin)| A softer alternative to Haddock |
+|[backprop](https://backprop.jle.im)| Heterogeneous automatic differentiation |
 
 # Copyright
 
