@@ -141,7 +141,8 @@ tintinHeader info@Project.Info {..} Project.Page {..} =
           , content_ "summary"
           ]
     meta_ [ name_ "twitter:site"
-          , content_ githubLink
+          , content_ ("https://s3-eu-west-1.amazonaws.com/worldwideapps/assets/tintin-" <> (Text.toLower $ show color) <> ".png")
+
           ]
     meta_ [ name_ "twitter:title"
           , content_ (name <> " - " <> title)
@@ -153,7 +154,8 @@ tintinHeader info@Project.Info {..} Project.Page {..} =
           , content_ githubAuthor
           ]
     meta_ [ name_ "twitter:image"
-          , content_ "https://wiki.haskell.org/wikiupload/4/4a/HaskellLogoStyPreview-1.png"
+          , content_ ("https://s3-eu-west-1.amazonaws.com/worldwideapps/assets/tintin-" <> (Text.toLower $ show color) <> ".png")
+
           ]
     -- Open Graph data
     meta_ [ itemprop_ "og:type"
@@ -166,10 +168,11 @@ tintinHeader info@Project.Info {..} Project.Page {..} =
           , content_ (name <> " - " <> title)
           ]
     meta_ [ itemprop_ "og:url"
-          , content_ (githubLink <> name)
+          , content_ githubLink
           ]
     meta_ [ itemprop_ "og:image"
-          , content_ "https://wiki.haskell.org/wikiupload/4/4a/HaskellLogoStyPreview-1.png"
+          , content_  ("https://s3-eu-west-1.amazonaws.com/worldwideapps/assets/tintin-" <> (Text.toLower $ show color) <> ".png")
+
           ]
     meta_ [ itemprop_ "og:description"
           , content_ synopsis
