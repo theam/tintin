@@ -138,6 +138,47 @@ tintinHeader :: Project.Info -> Project.Page -> Html ()
 tintinHeader info@Project.Info {..} Project.Page {..} =
   head_ $ do
     title_ ( toHtml $ name <> " - " <> title )
+    -- Twitter Card data
+    meta_ [ name_ "twitter:card"
+          , content_ "summary"
+          ]
+    meta_ [ name_ "twitter:site"
+          , content_ ("https://s3-eu-west-1.amazonaws.com/worldwideapps/assets/tintin-" <> (Text.toLower $ show color) <> ".png")
+
+          ]
+    meta_ [ name_ "twitter:title"
+          , content_ (name <> " - " <> title)
+          ]
+    meta_ [ name_ "twitter:description"
+          , content_ synopsis
+          ]
+    meta_ [ name_ "twitter:creator"
+          , content_ githubAuthor
+          ]
+    meta_ [ name_ "twitter:image"
+          , content_ ("https://s3-eu-west-1.amazonaws.com/worldwideapps/assets/tintin-" <> (Text.toLower $ show color) <> ".png")
+
+          ]
+    -- Open Graph data
+    meta_ [ itemprop_ "og:type"
+          , content_ "website"
+          ]
+    meta_ [ itemprop_ "og:site_name"
+          , content_ "theam"
+          ]
+    meta_ [ itemprop_ "og:title"
+          , content_ (name <> " - " <> title)
+          ]
+    meta_ [ itemprop_ "og:url"
+          , content_ githubLink
+          ]
+    meta_ [ itemprop_ "og:image"
+          , content_  ("https://s3-eu-west-1.amazonaws.com/worldwideapps/assets/tintin-" <> (Text.toLower $ show color) <> ".png")
+
+          ]
+    meta_ [ itemprop_ "og:description"
+          , content_ synopsis
+          ]
     link_ [ rel_ "stylesheet"
           , href_ "https://fonts.googleapis.com/css?family=IBM+Plex+Sans|Montserrat:500"
           ]
