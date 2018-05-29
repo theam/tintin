@@ -57,6 +57,7 @@ library:
   - clay
   - data-has
   - frontmatter
+  - containers
   verbatim:
     build-tool-depends: require:requirepp
 
