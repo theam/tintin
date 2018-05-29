@@ -57,6 +57,8 @@ library:
   - clay
   - data-has
   - frontmatter
+  verbatim:
+    build-tool-depends: require:requirepp
 
 
 
@@ -72,6 +74,8 @@ executables:
     - tintin
     - universum
     - optparse-generic
+    verbatim:
+      build-tool-depends: require:requirepp
 
 tests:
   tintin-test:
