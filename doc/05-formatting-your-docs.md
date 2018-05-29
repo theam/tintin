@@ -6,6 +6,18 @@ title: Formatting your docs
 
 Tintin is just regular markdown. In case you are not familiar with it, [here you have a cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).
 
+# LaTeX
+
+You can write LaTeX by enclosing it in between double dollars `$$`:
+
+```latex
+$$ f(x) = \int_{-\infty}^\infty\hat f(\xi)\,e^{2 \pi i \xi x}\,d\xi $$
+```
+
+Results in:
+
+$$ f(x) = \int_{-\infty}^\infty\hat f(\xi)\,e^{2 \pi i \xi x}\,d\xi $$
+
 # Haskell code
 
 Tintin allows you to use the special Haskell code blocks from [inliterate](https://github.com/diffusionkinetics/open/tree/master/inliterate):

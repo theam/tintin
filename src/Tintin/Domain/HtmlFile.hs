@@ -8,6 +8,10 @@ require Tintin.Domain.FrontMatter
 require Data.Text
 
 
+data BuildTool
+  = Stack
+  | Cabal
+
 newtype CompilationError = CompilationError Text deriving Show
 
 showCompilationError :: CompilationError
@@ -34,9 +38,10 @@ fromDocumentationFile docfile =
 run :: ( Has Filesystem.Capability eff
        , Has Process.Capability eff
        )
-    => HtmlFile
+    => BuildTool
+    -> HtmlFile
     -> Effectful eff (Either CompilationError HtmlFile)
-run HtmlFile {..} = do
+run buildTool HtmlFile {..} = do
   Filesystem.Path currentDirectory <- Filesystem.currentDirectory
   let tintinDir = currentDirectory <> "/.stack-work/tintin/"
   let tempDir   = tintinDir <> "temp/"
@@ -52,10 +57,13 @@ run HtmlFile {..} = do
   Filesystem.deleteIfExists (Filesystem.Path tempDir)
   Filesystem.makeDirectory (Filesystem.Path tempDir)
   Filesystem.writeFile (Filesystem.Path hsFilename) content
-  result <- Process.read
-    (Process.CommandName "stack")
-    (Process.Arguments ["runghc", hsFilename, "--", "--no-inlit-wrap"])
-
+  result <- case buildTool of
+              Stack -> Process.read
+                       (Process.CommandName "stack")
+                       (Process.Arguments ["runghc", hsFilename, "--", "--no-inlit-wrap"])
+              Cabal -> Process.read
+                       (Process.CommandName "runghc")
+                       (Process.Arguments [hsFilename, "--no-inlit-wrap"])
 
   case result of
     Left  (Process.StdErr err) ->
