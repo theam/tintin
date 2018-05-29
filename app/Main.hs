@@ -13,7 +13,8 @@ import qualified Tintin.Capabilities.Process as Process
 
 data Options = Options
   { outputDirectory :: Maybe Text
-  , verbose :: Bool
+  , verbose  :: Bool
+  , runghc :: Bool
   }
 
 deriving instance Generic Options
@@ -29,4 +30,6 @@ main = do
                    else Logging.mute
   let filesystem = Filesystem.local
   let process    = Process.local
-  runEffects ( runApp $ OutputDirectory outputDir ) (logger, filesystem, process)
+  let shouldUseCabal = runghc opts
+  runEffects ( runApp shouldUseCabal $ OutputDirectory outputDir ) (logger, filesystem, process)
+

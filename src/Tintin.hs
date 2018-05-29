@@ -11,21 +11,24 @@ require Tintin.Capabilities.Process
 require Tintin.Parse
 require Tintin.Render
 require Tintin.ConfigurationLoading
+require Tintin.Domain.HtmlFile
 
 
 runApp :: ( Has Logging.Capability eff
           , Has Filesystem.Capability eff
           , Has Process.Capability eff
           )
-       => OutputDirectory
+       => Bool
+       -> OutputDirectory
        -> Effectful eff ()
-runApp outputDirectory = do
+runApp shouldUseCabal outputDirectory = do
   cleanUp outputDirectory
   docDir    <- getDocumentationDirectory
   filenames <- getDocumentationFilenames docDir
+  let buildTool = if shouldUseCabal then HtmlFile.Cabal else HtmlFile.Stack
 
   Parse.docs docDir filenames
-   |>> Render.perform
+   |>> Render.perform buildTool
    |>> ConfigurationLoading.loadInfo
    |>> Render.writeOutput outputDirectory
 

@@ -4,15 +4,12 @@ title: Getting Started
 
 # Getting Started with Tintin
 
-**Note:** Currently, `tintin` only supports [stack](https://haskellstack.org) projects.
-
-
 ## Requirements
 
-### Stack
+### Build tool
 
-You'll have to have installed the [stack](https://haskellstack.org) Haskell build tool .
-The installation is straightforward:
+You'll have to have installed either, the [stack](https://haskellstack.org) Haskell build tool. Or `runghc`.
+The Stack installation is straightforward:
 
 ```bash
 wget -qO- https://get.haskellstack.org/ | sh
@@ -28,6 +25,14 @@ wget -qO- https://github.com/theam/tintin/raw/master/assets/install | sh
 
 We invite you to [check the installation script](https://github.com/theam/tintin/blob/master/assets/install)
 before you run it.
+
+If you prefer `cabal` over Stack, you can run:
+
+```bash
+cabal update
+cabal install inliterate
+cabal install tintin
+```
 
 ## Creating a new project with the Tintin template
 

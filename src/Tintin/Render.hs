@@ -19,13 +19,14 @@ perform :: ( Has Logging.Capability eff
            , Has Filesystem.Capability eff
            , Has Process.Capability eff
            )
-        => [DocumentationFile]
+        => HtmlFile.BuildTool
+        -> [DocumentationFile]
         -> Effectful eff [HtmlFile]
-perform docFiles = do
+perform buildTool docFiles = do
   Logging.debug "Rendering"
   (errors, htmlFiles) <- docFiles
                          |>  map  HtmlFile.fromDocumentationFile
-                         |>  mapM HtmlFile.run
+                         |>  mapM (HtmlFile.run buildTool)
                          |$> partitionEithers
   unless (null errors) (Errors.textDie (HtmlFile.showCompilationError <$> errors))
   return htmlFiles
