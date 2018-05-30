@@ -50,7 +50,7 @@ And it's a piece of cake:
 
 * **1.** Put your documentation into the `doc` folder
 * **2.** Install the `tintin` dependencies
-* **3.** Run `tintin`
+* **3.** Execute `tintin run`
 
 ---
 
@@ -93,6 +93,4 @@ Technologies used throughout this project:
 * [Yaml](https://github.com/snoyberg/yaml/), the Yaml deserialization library
 * [Bootstrap 4](https://getbootstrap.com/docs/4.0/), CSS framework
 * [jQuery](https://jquery.com/)
-* [AOS](https://github.com/michalsnik/aos), animate on scroll JS library
-* [AnimeJS](http://animejs.com/), animation JS library
 
