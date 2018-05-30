@@ -44,5 +44,5 @@ title: Title of the page
 
 ## Generating the website
 
-Just execute `tintin` and you will have a website ready at `.stack-work/tintin/rendered`.
+Just execute `tintin run` and you will have a website ready at `.stack-work/tintin/rendered`.
 
