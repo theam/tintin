@@ -137,7 +137,7 @@ style = toText . render $ do
 
   ".filter-gray" ? do
     position relative
-    bottom (px ( -3 ))
+    bottom (px ( 3 ))
     marginLeft (rem 0.25)
     marginRight (rem 1)
     height (rem 1)

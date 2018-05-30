@@ -13,7 +13,7 @@ require Tintin.Domain.Project
 require Data.Text
 
 import Tintin.Core
-import Universum.Unsafe (fromJust)
+import qualified Universum.Unsafe as Unsafe
 import Text.Read (read)
 
 
@@ -59,11 +59,11 @@ loadInfo htmlFiles = do
         (Errors.showAndDie ["Tintin usually generates a .tintin.yml file with a color configuration. Maybe you don't have enough permissions?\
                            \\n\nTry creating .tintin.yml and adding color:blue to it."])
       return Project.Info
-        { name = fromJust projectName
-        , synopsis = fromJust projectSynopsis
-        , githubLink = parseGithubUrl $ fromJust projectGithub
-        , githubAuthor = fromJust projectAuthor
-        , color = makeColor $ fromJust tintinColor
+        { name = Unsafe.fromJust projectName
+        , synopsis = Unsafe.fromJust projectSynopsis
+        , githubLink = parseGithubUrl $ Unsafe.fromJust projectGithub
+        , githubAuthor = Unsafe.fromJust projectAuthor
+        , color = makeColor $ Unsafe.fromJust tintinColor
         , logoUrl = tintinLogo
         , pages = pages
         }
@@ -98,6 +98,13 @@ loadInfo htmlFiles = do
     txt
     |> (Text.stripPrefix "\"" >=> Text.stripSuffix "\"")
     |> fromMaybe txt
+    |> (\t -> if "http" `Text.isPrefixOf` t
+              then Text.splitOn "/" t
+                   |> dropWhile (not . Text.isInfixOf "github")
+                   |> Unsafe.tail
+                   |> Unsafe.head
+              else t
+       )
     |> Text.takeWhile (/= '/')
 
   parseGithubUrl txt =
