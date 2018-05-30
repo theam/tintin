@@ -114,6 +114,7 @@ wrapHome info nextRef page = toText . renderText $ do
                ] $
             div_ [] $ do
               toHtmlRaw $ Project.content page
+      nextPrev (Project.Context Nothing nextRef)
       footer
       tintinPostInit
  where
@@ -145,7 +146,6 @@ wrapHome info nextRef page = toText . renderText $ do
                  , class_ $ "tintin-fg-" <> bgColorOf info
                  ] (toHtml $ Project.githubAuthor info)
           div_ [class_ "col", style_ ""] $ do
-            nextPrev (Project.Context Nothing nextRef)
             siteGenerated
 
 
