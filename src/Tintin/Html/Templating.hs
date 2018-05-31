@@ -2,6 +2,7 @@ module Tintin.Html.Templating where
 
 import Lucid
 
+import Data.Maybe
 import Tintin.Core
 require Tintin.Html.Style
 require Tintin.Domain.Project
@@ -115,21 +116,23 @@ wrapHome info page = toText . renderText $ do
             let (page:_) = filter (\x -> "index.html" /= Project.filename x ) (Project.pages info)
             li_ [class_ ""] $
               a_ [class_ "", href_ (Project.filename page)] "Docs"
-        div_ [class_ ""]$
-          ul_ [class_ ""] $
-            li_ [class_ ""] $
-              a_ [class_ "", href_ $ "https://github.com/" <> Project.githubLink info] "View on GitHub"
+        whenJust (Project.githubLink info) $ \ghlink ->
+          div_ [class_ ""] $
+            ul_ [class_ ""] $
+              li_ [class_ ""] $
+                a_ [class_ "", href_ $ "https://github.com/" <> ghlink] "View on GitHub"
 
   footer =
     footer_ [ class_ "tintin-bg-darkgrey tintin-fg-white"] $
       div_ [class_ "container"] $
         div_ [class_ "row"] $ do
           div_ [class_ "col"] $
-            p_ [class_ "tintin-fg-lightgrey"] $ do
+            p_ [class_ "tintin-fg-lightgrey"] $
+              when (isJust $ Project.githubLink info) $ do
               "Developed by "
-              a_ [ href_ $ "https://github.com/" <> Project.githubAuthor info
+              a_ [ href_ $ "https://github.com/" <> (fromJust $ Project.githubAuthor info)
                  , class_ $ "tintin-fg-" <> bgColorOf info
-                 ] (toHtml $ Project.githubAuthor info)
+                 ] (toHtml $ fromJust $ Project.githubAuthor info)
           div_ [class_ "col", style_ ""] $ do
             siteGenerated
 
@@ -152,9 +155,10 @@ tintinHeader info@Project.Info {..} Project.Page {..} =
     meta_ [ name_ "twitter:description"
           , content_ synopsis
           ]
-    meta_ [ name_ "twitter:creator"
-          , content_ githubAuthor
-          ]
+    whenJust githubAuthor $ \author ->
+      meta_ [ name_ "twitter:creator"
+            , content_ author
+            ]
     meta_ [ name_ "twitter:image"
           , content_ ("https://s3-eu-west-1.amazonaws.com/worldwideapps/assets/tintin-" <> (Text.toLower $ show color) <> ".png")
 
@@ -169,9 +173,10 @@ tintinHeader info@Project.Info {..} Project.Page {..} =
     meta_ [ itemprop_ "og:title"
           , content_ (name <> " - " <> title)
           ]
-    meta_ [ itemprop_ "og:url"
-          , content_ githubLink
-          ]
+    whenJust githubLink $ \ghlink ->
+      meta_ [ itemprop_ "og:url"
+            , content_ ghlink
+            ]
     meta_ [ itemprop_ "og:image"
           , content_  ("https://s3-eu-west-1.amazonaws.com/worldwideapps/assets/tintin-" <> (Text.toLower $ show color) <> ".png")
 

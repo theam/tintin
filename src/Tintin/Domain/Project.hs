@@ -30,8 +30,8 @@ data Info = Info
   { name         :: Text
   , synopsis     :: Text
   , color        :: Color
-  , githubLink   :: Text
-  , githubAuthor :: Text
+  , githubLink   :: Maybe Text
+  , githubAuthor :: Maybe Text
   , logoUrl      :: Maybe Text
   , pages        :: [Page]
   }

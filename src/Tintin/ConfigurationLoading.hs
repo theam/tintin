@@ -54,15 +54,14 @@ loadInfo htmlFiles = do
         tintinLogo      = tintinFile |> getFieldValue "logo"
       when (isNothing projectName) (Errors.showAndDie ["Project must have a name. Please set it in package.yaml or *.cabal."])
       when (isNothing projectSynopsis) (Errors.showAndDie ["Project must have a synopsis. Please set it in package.yaml or *.cabal."])
-      when (isNothing projectGithub) (Errors.showAndDie ["Project must be hosted in a Github repository. Please set it in package.yaml or *.cabal."])
       when (isNothing tintinColor)
         (Errors.showAndDie ["Tintin usually generates a .tintin.yml file with a color configuration. Maybe you don't have enough permissions?\
                            \\n\nTry creating .tintin.yml and adding color:blue to it."])
       return Project.Info
         { name = Unsafe.fromJust projectName
         , synopsis = Unsafe.fromJust projectSynopsis
-        , githubLink = parseGithubUrl $ Unsafe.fromJust projectGithub
-        , githubAuthor = Unsafe.fromJust projectAuthor
+        , githubLink = parseGithubUrl <$> projectGithub
+        , githubAuthor = projectAuthor
         , color = makeColor $ Unsafe.fromJust tintinColor
         , logoUrl = tintinLogo
         , pages = pages
