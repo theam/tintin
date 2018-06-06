@@ -36,3 +36,12 @@ data Info = Info
   , pages        :: [Page]
   }
 
+data PageRef = PageRef
+  { refTitle    :: Text
+  , refFilename :: Text
+  }
+
+data Context = Context
+  { prevRef :: Maybe PageRef
+  , nextRef :: Maybe PageRef
+  }

@@ -15,15 +15,15 @@ data Templating
 asset :: Text -> Text
 asset txt = "https://s3-eu-west-1.amazonaws.com/worldwideapps/assets/" <> txt
 
-wrap :: Project.Info -> Project.Page -> Text
-wrap info page =
+wrap :: Project.Info -> Project.Context -> Project.Page -> Text
+wrap info context page =
   if (Project.filename page) == "index.html"
-  then wrapHome info page
-  else wrapPage info page
+  then wrapHome info (Project.nextRef context) page
+  else wrapPage info context page
 
 
-wrapPage :: Project.Info -> Project.Page -> Text
-wrapPage info page = toText . renderText $ do
+wrapPage :: Project.Info -> Project.Context -> Project.Page -> Text
+wrapPage info context page = toText . renderText $ do
   doctypehtml_ $ do
     tintinHeader info page
     body_ [class_ "h-100 tintin-fg-black tintin-bg-white"] $ do
@@ -58,9 +58,24 @@ wrapPage info page = toText . renderText $ do
                   div_ [ class_ "animated fadeIn"
                        ] $
                     toHtmlRaw $ Project.content page
-        div_ [class_ "tintin-doc-footer clear-fix"]
+        div_ [class_ "tintin-doc-footer clear-fix"] $ do
+          nextPrev context
           siteGenerated
       tintinPostInit
+
+nextPrev :: Project.Context -> Html ()
+nextPrev context = do
+  div_ [] $ do
+    whenJust (Project.prevRef context) $ \prev -> do
+      div_ [] $ do
+        p_ [] $ do
+          a_ [href_ $ Project.refFilename prev] $  do
+            ( toHtml $ "< Previous: " <> Project.refTitle prev )
+    whenJust (Project.nextRef context) $ \next -> do
+      div_ [] $ do
+        p_ [] $ do
+          a_ [href_ $ Project.refFilename next] $  do
+            ( toHtml $ "Next: " <> Project.refTitle next <> " >")
 
 siteGenerated = do
   div_ [class_ "float-right"] $ do
@@ -73,9 +88,8 @@ siteGenerated = do
       a_ [class_ "float:left", href_ "http://theam.io"] $
         img_ [class_ "footer-theam", src_ "http://theam.io/logo_theam.png"]
 
-
-wrapHome :: Project.Info -> Project.Page -> Text
-wrapHome info page = toText . renderText $ do
+wrapHome :: Project.Info -> Maybe Project.PageRef -> Project.Page -> Text
+wrapHome info nextRef page = toText . renderText $ do
   doctypehtml_ $ do
     tintinHeader info page
     body_ [class_ "tintin-fg-black tintin-bg-white"] $ do
@@ -101,6 +115,7 @@ wrapHome info page = toText . renderText $ do
                ] $
             div_ [] $ do
               toHtmlRaw $ Project.content page
+      nextPrev (Project.Context Nothing nextRef)
       footer
       tintinPostInit
  where
