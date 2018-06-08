@@ -29,6 +29,10 @@ style = toText . render $ do
   h2 ? fontSize (em 1.953)
   h3 ? fontSize (em 1.563)
 
+  ".next-prev" ? do
+    marginTop (fromInteger 5 :: Size Percentage)
+    marginBottom (fromInteger 5 :: Size Percentage)
+
   "#header-container" ? do
     marginTop (rem 5)
     marginBottom (rem 5)
