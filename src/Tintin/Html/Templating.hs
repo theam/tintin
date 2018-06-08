@@ -74,6 +74,7 @@ nextPrev context = do
       div_ [class_ "col-md-4 ml-auto"] $ do
         a_ [href_ $ Project.refFilename next] $  do
           ( toHtml $ "Next: " <> Project.refTitle next <> " >")
+  br_ []
 
 siteGenerated = do
   div_ [class_ "float-right"] $ do
