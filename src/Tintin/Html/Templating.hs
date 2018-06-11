@@ -65,17 +65,15 @@ wrapPage info context page = toText . renderText $ do
 
 nextPrev :: Project.Context -> Html ()
 nextPrev context = do
-  div_ [] $ do
+  div_ [class_ "row next-prev"] $ do
     whenJust (Project.prevRef context) $ \prev -> do
-      div_ [] $ do
-        p_ [] $ do
-          a_ [href_ $ Project.refFilename prev] $  do
-            ( toHtml $ "< Previous: " <> Project.refTitle prev )
+      div_ [class_ "col-md-4 offset-md-4"] $ do
+        a_ [href_ $ Project.refFilename prev] $  do
+          ( toHtml $ "< Previous: " <> Project.refTitle prev )
     whenJust (Project.nextRef context) $ \next -> do
-      div_ [] $ do
-        p_ [] $ do
-          a_ [href_ $ Project.refFilename next] $  do
-            ( toHtml $ "Next: " <> Project.refTitle next <> " >")
+      div_ [class_ "col-md-4 ml-auto"] $ do
+        a_ [href_ $ Project.refFilename next] $  do
+          ( toHtml $ "Next: " <> Project.refTitle next <> " >")
 
 siteGenerated = do
   div_ [class_ "float-right"] $ do
