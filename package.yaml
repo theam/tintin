@@ -1,5 +1,5 @@
 name:                tintin
-version:             1.9.0
+version:             1.9.1
 github:              "theam/tintin"
 license:             Apache-2.0
 author:              "The Agile Monkeys"
@@ -10,6 +10,7 @@ license-file:        LICENSE.md
 extra-source-files:
 - README.md
 - ChangeLog.md
+- Requires
 
 # Metadata used when publishing your package
 synopsis:            A softer alternative to Haddock
