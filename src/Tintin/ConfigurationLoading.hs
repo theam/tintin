@@ -103,13 +103,9 @@ loadInfo htmlFiles = do
     in parseGithubUrl unquoted
        & (\t -> if "http" `Text.isPrefixOf` t
                 then Text.splitOn "/" t
-                     & traceShowId
                      & filter (not . Text.isInfixOf "git")
-                     & traceShowId
                      & filter (not . Text.null)
-                     & traceShowId
                      & Unsafe.tail
-                     & traceShowId
                      & Unsafe.head
                 else t
          )
@@ -119,7 +115,6 @@ loadInfo htmlFiles = do
     let unquoted = stripGit $ stripQuotes txt
     in unquoted
        & Text.stripPrefix "github.com/"
-       & traceShowId
        & fromMaybe unquoted
 
   stripQuotes txt =
