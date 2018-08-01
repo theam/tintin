@@ -22,8 +22,8 @@ docs :: ( Has Logging.Capability eff
 docs docDir filenames = do
   Logging.debug "Parsing documentation"
   (errors, docFiles) <- filenames
-                        |>  mapM (readAndParse docDir)
-                        |$> partitionEithers
+                        & traverse (readAndParse docDir)
+                        & fmap partitionEithers
   unless (null errors) (Errors.showAndDie errors)
   return docFiles
 

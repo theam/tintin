@@ -18,7 +18,7 @@ showAndDie :: ( Has Logging.Capability eff
            -> Effectful eff ()
 showAndDie errors = do
     errors
-     |> mapM_ (Logging.err . show)
+     & mapM_ (Logging.err . show)
     die "Errors found. Exiting."
 
 textDie :: ( Has Logging.Capability eff
@@ -27,6 +27,6 @@ textDie :: ( Has Logging.Capability eff
         -> Effectful eff ()
 textDie errors = do
     errors
-     |> mapM_ Logging.err
+     & mapM_ Logging.err
     die "Errors found. Exiting."
 

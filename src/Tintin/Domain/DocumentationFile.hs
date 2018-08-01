@@ -35,6 +35,6 @@ new (Filename filename) rawText =
  where
   parse txt =
     encodeUtf8 @Text @ByteString txt
-    |> FMParser.parseYamlFrontmatter
+    & FMParser.parseYamlFrontmatter
 
 

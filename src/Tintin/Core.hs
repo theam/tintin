@@ -4,11 +4,8 @@ module Tintin.Core
   , Effectful
   , Pure
 
-  , (|>)
-  , (|$>)
-  , (|>>)
-
   , runEffects
+  , flatMap
   )
 where
 
@@ -35,11 +32,14 @@ type Pure context result =
   Reader context result
 
 
-(|>) :: a -> (a -> b) -> b
-(|>) = (&)
+-- (|>) :: a -> (a -> b) -> b
+-- (|>) = (&)
+--
+-- (|$>) :: Functor f => f a -> (a -> b) -> f b
+-- (|$>) = (<&>)
+--
+-- (|>>) :: Monad m => m a -> (a -> m b) -> m b
+-- (|>>) = (>>=)
 
-(|$>) :: Functor f => f a -> (a -> b) -> f b
-(|$>) = (<&>)
-
-(|>>) :: Monad m => m a -> (a -> m b) -> m b
-(|>>) = (>>=)
+flatMap :: Monad m => (a -> m b) -> m a -> m b
+flatMap = (=<<)

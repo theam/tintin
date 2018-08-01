@@ -26,7 +26,7 @@ loadInfo :: ( Has Logging.Capability eff
          -> Effectful eff Project.Info
 loadInfo htmlFiles = do
   let pages = htmlFiles
-              |> map (\HtmlFile.HtmlFile {..} -> Project.Page title content filename)
+              & map (\HtmlFile.HtmlFile {..} -> Project.Page title content filename)
   Filesystem.Path currentDir <- Filesystem.currentDirectory
   files <- Filesystem.list (Filesystem.Path currentDir)
   let packageYamlFile = find isPackageYaml files
@@ -45,13 +45,13 @@ loadInfo htmlFiles = do
         Filesystem.writeFile tintinPath "color: blue\n"
       tintinFile <- Filesystem.readFile tintinPath
       let
-        projectName     = projectInfoFile |> getFieldValue "name"
-        projectSynopsis = projectInfoFile |> getFieldValue "synopsis"
-        projectGithub   = (projectInfoFile |> getFieldValue "github")
-                          <|> (projectInfoFile |> getFieldValue "location")
-        projectAuthor   = projectGithub |$> getAuthor
-        tintinColor     = tintinFile |> getFieldValue "color"
-        tintinLogo      = tintinFile |> getFieldValue "logo"
+        projectName     = projectInfoFile & getFieldValue "name"
+        projectSynopsis = projectInfoFile & getFieldValue "synopsis"
+        projectGithub   = (projectInfoFile & getFieldValue "github")
+                          <|> (projectInfoFile & getFieldValue "location")
+        projectAuthor   = projectGithub & fmap getAuthor
+        tintinColor     = tintinFile & getFieldValue "color"
+        tintinLogo      = tintinFile & getFieldValue "logo"
       when (isNothing projectName) (Errors.showAndDie ["Project must have a name. Please set it in package.yaml or *.cabal."])
       when (isNothing projectSynopsis) (Errors.showAndDie ["Project must have a synopsis. Please set it in package.yaml or *.cabal."])
       when (isNothing tintinColor)
@@ -82,40 +82,56 @@ loadInfo htmlFiles = do
   makeColor :: Text -> Project.Color
   makeColor txt =
     let capitalLetter = txt
-                        |> Text.head
-                        |> Text.singleton
-                        |> Text.toUpper
+                        & Text.head
+                        & Text.singleton
+                        & Text.toUpper
         restOfText    = txt
-                        |> Text.tail
+                        & Text.tail
     in  (capitalLetter <> restOfText)
-         |> toString
-         |> read
+         & toString
+         & read
 
   getFieldValue field txt = txt
-                          |> lines
-                          |> filter (\t -> field `Text.isPrefixOf` Text.strip t)
-                          |> safeHead
-                          |$> Text.strip
-                          |>> Text.stripPrefix (field <> ":")
-                          |$> Text.strip
+                          & lines
+                          & filter (\t -> field `Text.isPrefixOf` Text.strip t)
+                          & safeHead
+                          & fmap Text.strip
+                          & flatMap (Text.stripPrefix $ field <> ":")
+                          & fmap Text.strip
   getAuthor txt =
-    txt
-    |> (Text.stripPrefix "\"" >=> Text.stripSuffix "\"")
-    |> fromMaybe txt
-    |> (\t -> if "http" `Text.isPrefixOf` t
-              then Text.splitOn "/" t
-                   |> dropWhile (not . Text.isInfixOf "github")
-                   |> Unsafe.tail
-                   |> Unsafe.head
-              else t
-       )
-    |> Text.takeWhile (/= '/')
+    let unquoted = stripQuotes txt
+    in parseGithubUrl unquoted
+       & (\t -> if "http" `Text.isPrefixOf` t
+                then Text.splitOn "/" t
+                     & traceShowId
+                     & filter (not . Text.isInfixOf "git")
+                     & traceShowId
+                     & filter (not . Text.null)
+                     & traceShowId
+                     & Unsafe.tail
+                     & traceShowId
+                     & Unsafe.head
+                else t
+         )
+       & Text.takeWhile (/= '/')
 
   parseGithubUrl txt =
-    txt
-    |>  Text.stripPrefix "\""
-    |>> Text.stripSuffix "\""
-    |>  fromMaybe txt
+    let unquoted = stripGit $ stripQuotes txt
+    in unquoted
+       & Text.stripPrefix "github.com/"
+       & traceShowId
+       & fromMaybe unquoted
 
+  stripQuotes txt =
+    txt
+    & Text.stripPrefix "\""
+    & flatMap (Text.stripSuffix "\"")
+    & fromMaybe txt
+
+  stripGit txt =
+    txt
+    & Text.stripPrefix "git://"
+    & flatMap (Text.stripSuffix ".git")
+    & fromMaybe txt
 
 

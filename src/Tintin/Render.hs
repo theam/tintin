@@ -26,9 +26,9 @@ perform :: ( Has Logging.Capability eff
 perform buildTool docFiles = do
   Logging.debug "Rendering"
   (errors, htmlFiles) <- docFiles
-                         |>  map  HtmlFile.fromDocumentationFile
-                         |>  mapM (HtmlFile.run buildTool)
-                         |$> partitionEithers
+                         &  map  HtmlFile.fromDocumentationFile
+                         &  mapM (HtmlFile.run buildTool)
+                         & fmap partitionEithers
   unless (null errors) (Errors.textDie (HtmlFile.showCompilationError <$> errors))
   return htmlFiles
 
@@ -82,8 +82,8 @@ withContext ps = elems contextMap
     -- alphabetical sorting.
     contextMap :: Map Text (Project.Page, Project.Context)
     contextMap = ps
-             |$> (\p -> (Project.filename p, (p, makeContext p)))
-             |>  Map.fromList
+             & fmap (\p -> (Project.filename p, (p, makeContext p)))
+             & Map.fromList
     -- | Actual function that pairs up each page with its context (next and
     -- previous links).
     --
@@ -96,16 +96,16 @@ withContext ps = elems contextMap
     makeContext :: Project.Page -> Project.Context
     makeContext p
         | fn == "index.html" = Map.lookupMin pageMap
-                                 |$> snd
-                                 |$> makeRef
-                                 |> Project.Context Nothing
+                                 & fmap snd
+                                 & fmap makeRef
+                                 & Project.Context Nothing
         | otherwise          =
             let prev = Map.lookupLT fn pageMap
-                        |$> snd
-                        |$> makeRef
+                        & fmap snd
+                        & fmap makeRef
                 next = Map.lookupGT fn pageMap
-                        |$> snd
-                        |$> makeRef
+                        & fmap snd
+                        & fmap makeRef
             in  Project.Context (prev <|> indexRef) next  -- if no prev, use index
       where
         fn = Project.filename p
