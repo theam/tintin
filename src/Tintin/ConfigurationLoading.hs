@@ -55,8 +55,7 @@ loadInfo htmlFiles = do
       when (isNothing projectName) (Errors.showAndDie ["Project must have a name. Please set it in package.yaml or *.cabal."])
       when (isNothing projectSynopsis) (Errors.showAndDie ["Project must have a synopsis. Please set it in package.yaml or *.cabal."])
       when (isNothing tintinColor)
-        (Errors.showAndDie ["Tintin usually generates a .tintin.yml file with a color configuration. Maybe you don't have enough permissions?\
-                           \\n\nTry creating .tintin.yml and adding color:blue to it."])
+        (Errors.showAndDie [errorMessages])
       return Project.Info
         { name = Unsafe.fromJust projectName
         , synopsis = Unsafe.fromJust projectSynopsis
@@ -68,6 +67,12 @@ loadInfo htmlFiles = do
         }
 
  where
+  errorMessages = unlines
+    ["Tintin usually generates a .tintin.yml file with a color configuration. Maybe you don't have enough permissions?"
+    , ""
+    , ""
+    , "Try creating .tintin.yml and adding color:blue to it."
+    ]
   isPackageYaml (Filesystem.Path p) =
     p == "package.yaml"
 
