@@ -29,9 +29,8 @@ before you run it.
 If you prefer `cabal` over Stack, you can run:
 
 ```bash
-cabal update
-cabal install inliterate
-cabal install tintin
+cabal new-update
+cabal new-install tintin
 ```
 
 ## Creating a new project with the Tintin template
