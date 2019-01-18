@@ -230,11 +230,7 @@ tintinPostInit = do
   script_ [ src_ "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/haskell.min.js"] ("" :: Text)
   script_ [ src_ "https://cdn.rawgit.com/icons8/bower-webicon/v0.10.7/jquery-webicon.min.js" ] ( "" :: Text )
   script_ "hljs.initHighlightingOnLoad()"
-  script_ "$(function () {$(\"#menu-toggle\").click(function(e) {\
-        \e.preventDefault();\
-        \$(\"#wrapper\").toggleClass(\"toggled\");\
-        \$(\"#menu-toggle img\").toggleClass(\"rotateIn rotateOut\");\
-    \})});"
+  script_ "$(function () {$(\"#menu-toggle\").click(function(e) {e.preventDefault();$(\"#wrapper\").toggleClass(\"toggled\");$(\"#menu-toggle img\").toggleClass(\"rotateIn rotateOut\");})});"
   script_ [src_ "https://cdn.jsdelivr.net/npm/katex@0.10.0-alpha/dist/katex.min.js"] ("" :: Text)
   script_ [src_ "https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/contrib/auto-render.min.js"] ("" :: Text)
   script_ "renderMathInElement(document.body);"
