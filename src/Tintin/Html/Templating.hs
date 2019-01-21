@@ -239,6 +239,6 @@ tintinPostInit = do
 bgColorOf :: Project.Info -> Text
 bgColorOf info =
   Project.color info
-  |> show
-  |> Text.toLower
+  & show
+  & Text.toLower
 

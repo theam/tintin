@@ -29,10 +29,10 @@ fromDocumentationFile :: DocumentationFile
                       -> HtmlFile
 fromDocumentationFile docfile =
   DocumentationFile.content docfile
-   |> ("{-# OPTIONS_GHC -F -pgmF inlitpp #-}\n" <>)
-   |> HtmlFile (DocumentationFile.filename docfile) docTitle
+   & ("{-# OPTIONS_GHC -F -pgmF inlitpp #-}\n" <>)
+   & HtmlFile (DocumentationFile.filename docfile) docTitle
  where
-  docTitle = docfile |> DocumentationFile.frontMatter |> FrontMatter.title
+  docTitle = docfile & DocumentationFile.frontMatter & FrontMatter.title
 
 
 run :: ( Has Filesystem.Capability eff
@@ -46,14 +46,14 @@ run buildTool HtmlFile {..} = do
   let tintinDir = currentDirectory <> "/.stack-work/tintin/"
   let tempDir   = tintinDir <> "temp/"
   let hsFilename = filename
-                   |> Text.breakOn ".md"
-                   |> fst
-                   |> (<> ".hs")
-                   |> (tempDir <>)
+                   & Text.breakOn ".md"
+                   & fst
+                   & (<> ".hs")
+                   & (tempDir <>)
   let htmlFilename = filename
-                     |> Text.breakOn ".md"
-                     |> fst
-                     |> (<> ".html")
+                     & Text.breakOn ".md"
+                     & fst
+                     & (<> ".html")
   Filesystem.deleteIfExists (Filesystem.Path tempDir)
   Filesystem.makeDirectory (Filesystem.Path tempDir)
   Filesystem.writeFile (Filesystem.Path hsFilename) content

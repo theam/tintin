@@ -28,12 +28,12 @@ publish :: ( Has Logging.Capability eff
 publish (OutputDirectory p)= do
   gitContents <- Filesystem.readFile ( Filesystem.Path ".git/config" )
   let r = lines gitContents
-          |>  dropWhile (not . Text.isInfixOf "origin")
-          |>  nonEmpty
-          |$> tail
-          |>> safeHead
-          |$> Text.dropWhile (/= '=')
-          |$> Text.dropWhile (/= 'g')
+          &  dropWhile (not . Text.isInfixOf "origin")
+          &  nonEmpty
+          & fmap tail
+          & flatMap safeHead
+          & fmap (Text.dropWhile (/= '='))
+          & fmap (Text.dropWhile (/= 'g'))
   case r of
     Nothing ->
       Errors.textDie ["Could not read origin remote. Are you in a Git repository?"]
@@ -79,9 +79,9 @@ runApp shouldUseCabal outputDirectory = do
   let buildTool = if shouldUseCabal then HtmlFile.Cabal else HtmlFile.Stack
 
   Parse.docs docDir filenames
-   |>> Render.perform buildTool
-   |>> ConfigurationLoading.loadInfo
-   |>> Render.writeOutput outputDirectory
+   & flatMap (Render.perform buildTool)
+   & flatMap (ConfigurationLoading.loadInfo)
+   & flatMap (Render.writeOutput outputDirectory)
 
 
 cleanUp :: ( Has Logging.Capability eff
@@ -103,8 +103,8 @@ getDocumentationFilenames :: ( Has Logging.Capability eff
 getDocumentationFilenames (DocumentationDirectory docDir) = do
   Logging.debug ( "Reading documentation files at " <> docDir )
   Filesystem.Path docDir
-   |>  Filesystem.list
-   |$> Filesystem.getPathsWith (Filesystem.Extension ".md")
+   & Filesystem.list
+   & fmap (Filesystem.getPathsWith $ Filesystem.Extension ".md")
 
 
 

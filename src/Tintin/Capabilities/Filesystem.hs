@@ -56,8 +56,8 @@ local =
 
   _currentDirectory =
     getCurrentDirectory
-    |$> toText
-    |$> Path
+    & fmap toText
+    & fmap Path
 
   _readFile (Path p) = Core.readFile (toString p)
 
