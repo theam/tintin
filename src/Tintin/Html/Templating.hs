@@ -154,6 +154,8 @@ tintinHeader :: Project.Info -> Project.Page -> Html ()
 tintinHeader info@Project.Info {..} Project.Page {..} =
   head_ $ do
     title_ ( toHtml $ name <> " - " <> title )
+    -- Workaround over https://github.com/highlightjs/highlight.js/issues/1387
+    meta_ [ charset_ "utf-8" ]
     -- Twitter Card data
     meta_ [ name_ "twitter:card"
           , content_ "summary"
