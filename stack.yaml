@@ -39,8 +39,7 @@ packages:
 - location: .
 
 extra-deps:
-  - require-0.4.0
-  - megaparsec-6.5.0
+  - require-0.4.2
 
 # Override default flag values for local packages and extra-deps
 # flags: {}
