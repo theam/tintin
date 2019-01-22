@@ -34,6 +34,7 @@ Please submit a PR if you are using Tintin!
 |-|-|
 |[Tintin](https://theam.github.io/tintin)| A softer alternative to Haddock |
 |[backprop](https://backprop.jle.im)| Heterogeneous automatic differentiation |
+|[hedn](https://dpwiz.gitlab.io/hedn/)| EDN parsing and encoding |
 
 # Copyright
 
