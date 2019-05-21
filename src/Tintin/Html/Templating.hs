@@ -30,10 +30,10 @@ wrapPage info context page = toText . renderText $ do
       div_ [id_ "main-container", class_ "h-100"] $ do
         section_ [ id_ "content"] $ do
           div_ [id_ "wrapper", class_ "toggled"] $ do
-            div_ [id_ "sidebar-wrapper", class_ $ "h-100 tintin-bg-" <> bgColorOf info] $ do
+            div_ [id_ "sidebar-wrapper", class_ $ "h-100 tintin-bg-" <> bgColorNameOf info] $ do
               div_ [ class_ "h-100 tintin-bg-70"] ( p_ "" )
               ul_ [ class_ "sidebar-nav"] $ do
-                li_ [ class_ $ "sidebar-brand d-flex tintin-bg-" <> bgColorOf info] $ do
+                li_ [ class_ $ "sidebar-brand d-flex tintin-bg-" <> bgColorNameOf info] $ do
                   a_ [href_ "index.html", class_ "align-self-center tintin-fg-white"] $ do
                     case Project.logoUrl info of
                       Nothing -> toHtml $ Project.name info
@@ -92,7 +92,7 @@ wrapHome info nextRef page = toText . renderText $ do
     tintinHeader info page
     body_ [class_ "tintin-fg-black tintin-bg-white"] $ do
 
-      div_ [class_ $ "tintin-navigation tintin-bg-" <> bgColorOf info] $ do
+      div_ [class_ $ "tintin-navigation tintin-bg-" <> bgColorNameOf info] $ do
         div_ [class_ "cover-container d-flex p-3 mx-auto flex-column tintin-fg-white"] $ do
           main_ [role_ "main", class_ "masthead mb-auto"] $ do
             div_ [class_ "container"] $ do
@@ -144,7 +144,7 @@ wrapHome info nextRef page = toText . renderText $ do
               when (isJust $ Project.githubLink info) $ do
               "Developed by "
               a_ [ href_ $ "https://github.com/" <> (fromJust $ Project.githubAuthor info)
-                 , class_ $ "tintin-fg-" <> bgColorOf info
+                 , class_ $ "tintin-fg-" <> bgColorNameOf info
                  ] (toHtml $ fromJust $ Project.githubAuthor info)
           div_ [class_ "col", style_ ""] $ do
             siteGenerated
@@ -213,14 +213,14 @@ tintinHeader info@Project.Info {..} Project.Page {..} =
           ]
     link_ [ rel_ "shortcut icon"
           , href_ ( asset $ "favicon-"
-                  <> bgColorOf info
+                  <> bgColorNameOf info
                   <> ".ico"
                   )
           ]
     link_ [ rel_ "stylesheet"
           , href_ "https://cdn.jsdelivr.net/npm/katex@0.10.0-alpha/dist/katex.min.css"
           ]
-    style_ Style.style
+    style_ $ Style.style $ Project.color info
 
 
 tintinPostInit :: Html ()
@@ -236,9 +236,12 @@ tintinPostInit = do
   script_ [src_ "https://cdn.jsdelivr.net/npm/katex@0.10.0-alpha/dist/katex.min.js"] ("" :: Text)
   script_ [src_ "https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/contrib/auto-render.min.js"] ("" :: Text)
   script_ "renderMathInElement(document.body);"
-bgColorOf :: Project.Info -> Text
-bgColorOf info =
-  Project.color info
-  & show
-  & Text.toLower
 
+bgColorNameOf :: Project.Info -> Text
+bgColorNameOf info =
+  case color of
+    Project.HexColor color -> fromString "custom"
+    _ -> color
+          & show
+          & Text.toLower
+  where color = Project.color info

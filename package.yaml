@@ -51,6 +51,7 @@ library:
   - directory
   - temporary
   - process
+  - inflections
   - inliterate
   - universum
   - lucid
