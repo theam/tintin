@@ -20,6 +20,19 @@ import qualified Text.Inflections as Inflections
 
 data ConfigurationLoading
 
+readFileIfExists :: ( Has Logging.Capability eff
+                    , Has Filesystem.Capability eff
+                    )
+                 => Text -> Text -> Effectful eff (Maybe Text)
+readFileIfExists currentDir filename = do
+  let path = Filesystem.Path $ currentDir <> "/" <> filename
+  Logging.debug $ "Reading " <> filename
+  fileExists <- Filesystem.doesExist path
+  if fileExists then do
+    text <- Filesystem.readFile path
+    return (Just text)
+  else return Nothing
+
 loadInfo :: ( Has Logging.Capability eff
             , Has Filesystem.Capability eff
             )
@@ -85,7 +98,7 @@ loadInfo htmlFiles = do
     case Text.stripPrefix "#" txt of
       Just _ -> Project.HexColor txt
       Nothing -> Inflections.SomeWord <$> Inflections.mkWord txt
-        & Inflections.titleize 
+        & Inflections.titleize
         & toString
         & read
 
