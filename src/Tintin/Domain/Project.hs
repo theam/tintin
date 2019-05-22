@@ -16,6 +16,7 @@ data Color
   | LightOrange
   | Red
   | Grey
+  | HexColor Text
   deriving (Show, Read)
 
 

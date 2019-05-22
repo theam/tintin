@@ -15,6 +15,7 @@ require Data.Text
 import Tintin.Core
 import qualified Universum.Unsafe as Unsafe
 import Text.Read (read)
+import qualified Text.Inflections as Inflections
 
 
 data ConfigurationLoading
@@ -81,15 +82,12 @@ loadInfo htmlFiles = do
 
   makeColor :: Text -> Project.Color
   makeColor txt =
-    let capitalLetter = txt
-                        & Text.head
-                        & Text.singleton
-                        & Text.toUpper
-        restOfText    = txt
-                        & Text.tail
-    in  (capitalLetter <> restOfText)
-         & toString
-         & read
+    case Text.stripPrefix "#" txt of
+      Just _ -> Project.HexColor txt
+      Nothing -> Inflections.SomeWord <$> Inflections.mkWord txt
+        & Inflections.titleize 
+        & toString
+        & read
 
   getFieldValue field txt = txt
                           & lines

@@ -5,10 +5,12 @@ import Tintin.Core as Core hiding (( & ), rem, (|>))
 import Clay
 import qualified Clay.Media as Media
 
+require Tintin.Domain.Project
+
 data Style
 
-style :: Text
-style = toText . render $ do
+style :: Project.Color -> Text
+style projectColor = toText . render $ do
   html ? do
     height (pct 100)
     minHeight (pct 100)
@@ -218,11 +220,11 @@ style = toText . render $ do
   ".tintin-bg-70" ? do
     backgroundColor (rgba 255 255 255 0.15)
 
-  forM colorNames $ \(colorName, colorValue) ->
+  forM (colorNames projectColor) $ \(colorName, colorValue) ->
     (element $ ".tintin-bg-" <> colorName) ? do
       backgroundColor colorValue
 
-  forM colorNames $ \(colorName, colorValue) ->
+  forM (colorNames projectColor) $ \(colorName, colorValue) ->
     (element $ ".tintin-fg-" <> colorName) ? do
       color colorValue
 
@@ -265,9 +267,15 @@ style = toText . render $ do
       position relative
 
 
-
-colorNames :: [(Text, Color)]
-colorNames =
+-- TODO: This list is used to generate all possible CSS classes for supported colors. 
+-- As we now know at compile time what's he right color, we could remove this list and
+-- generate the required colors only.
+colorNames :: Project.Color -> [(Text, Color)]
+colorNames (Project.HexColor customColor) =
+  [ ("custom"     , clayColor)
+  ]
+  where clayColor = fromString $ toString customColor
+colorNames _ =
   [ ("black"      , "#1d1f21")
   , ("white"      , "#f5f8f6")
   , ("grey"       , "#4D4D4D")
