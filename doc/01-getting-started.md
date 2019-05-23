@@ -17,20 +17,16 @@ wget -qO- https://get.haskellstack.org/ | sh
 
 ## Installing
 
-You can install Tintin by issuing the following command:
+The recommended way to start using tintin in your project is to use stack:
 
 ```bash
-wget -qO- https://github.com/theam/tintin/raw/master/assets/install | sh
+stack install tintin
 ```
 
-We invite you to [check the installation script](https://github.com/theam/tintin/blob/master/assets/install)
-before you run it.
-
-If you prefer `cabal` over Stack, you can run:
+Once compilation finishes, you should be able to run tintin from the console:
 
 ```bash
-cabal new-update
-cabal new-install tintin
+tintin run
 ```
 
 ## Creating a new project with the Tintin template
