@@ -12,7 +12,7 @@ color: blue
 ```
 
 This is the main tintin configuration file. By default, Tintin will try to pull the basic
-information directly from your stack or cabal configuration file, but you can override
+information directly from your `package.yaml` or `*.cabal` configuration file, but you can override
 the settings in your `.tintin.yml` file too:
 
 ```yaml
