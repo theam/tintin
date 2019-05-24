@@ -28,13 +28,16 @@ data Page = Page
 
 
 data Info = Info
-  { name         :: Text
-  , synopsis     :: Text
-  , color        :: Color
-  , githubLink   :: Maybe Text
-  , githubAuthor :: Maybe Text
-  , logoUrl      :: Maybe Text
-  , pages        :: [Page]
+  { name               :: Text
+  , synopsis           :: Text
+  , color              :: Color
+  , githubLink         :: Maybe Text
+  , githubAuthor       :: Maybe Text
+  , logoUrl            :: Maybe Text
+  , titleFont          :: Text
+  , titleFontWeight    :: Integer
+  , bodyFont           :: Text
+  , pages              :: [Page]
   }
 
 data PageRef = PageRef

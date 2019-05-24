@@ -200,7 +200,7 @@ tintinHeader info@Project.Info {..} Project.Page {..} =
           , content_ synopsis
           ]
     link_ [ rel_ "stylesheet"
-          , href_ "https://fonts.googleapis.com/css?family=IBM+Plex+Sans|Montserrat:500"
+          , href_ $ googleFontUrl info
           ]
     link_ [ rel_ "stylesheet"
           , href_ "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
@@ -220,7 +220,7 @@ tintinHeader info@Project.Info {..} Project.Page {..} =
     link_ [ rel_ "stylesheet"
           , href_ "https://cdn.jsdelivr.net/npm/katex@0.10.0-alpha/dist/katex.min.css"
           ]
-    style_ $ Style.style $ Project.color info
+    style_ $ Style.style info
 
 
 tintinPostInit :: Html ()
@@ -245,3 +245,8 @@ bgColorNameOf info =
           & show
           & Text.toLower
   where color = Project.color info
+
+
+googleFontUrl :: Project.Info -> Text
+googleFontUrl Project.Info {..} = 
+  "https://fonts.googleapis.com/css?family=" <> bodyFont <> "|" <> titleFont <> ":" <> show titleFontWeight
