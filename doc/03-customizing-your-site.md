@@ -17,7 +17,7 @@ but you can override the settings in your `.tintin.yml` file too:
 
 ```yaml
 name: Wonderful project
-synopsis: This is a project that do wonderful things
+synopsis: This is a project that does wonderful things
 github: theam/wonderful-project
 author: Wonder Woman
 color: #AB2D1C
@@ -77,7 +77,7 @@ color: blue
 
 ### Use a custom hexadecimal color code
 
-Just write your hexadecimal color code as if you were writting it in a CSS file:
+Just write your hexadecimal color code as if you were writing it in a CSS file:
 
 ```yaml
 color: #424242
