@@ -12,14 +12,19 @@ color: blue
 ```
 
 This is the main tintin configuration file. By default, Tintin will try to pull the basic
-information directly from your `package.yaml` or `*.cabal` configuration file, but you can override
-the settings in your `.tintin.yml` file too:
+information directly from your `package.yaml` or `*.cabal` configuration file if they're present, 
+but you can override the settings in your `.tintin.yml` file too:
 
 ```yaml
-color: blue
+name: Wonderful project
+synopsis: This is a project that do wonderful things
+github: theam/wonderful-project
+author: Wonder Woman
+color: #AB2D1C
+logo: https://upload.wikimedia.org/wikipedia/en/3/3a/Wonder_Woman_Vol_5_16.png
 ```
 
-## Changing the color
+## Changing the color theme
 
 The `color` setting is used by tintin to generate the theme for your website.
 You can either set one of the preset color themes or set a RGB hexadecimal code:
@@ -72,7 +77,7 @@ color: blue
 
 ### Use a custom hexadecimal color code
 
-Just write your color code as if you were writting it in a CSS file:
+Just write your hexadecimal color code as if you were writting it in a CSS file:
 
 ```yaml
 color: #424242
@@ -80,16 +85,13 @@ color: #424242
 
 This color will be set as the main background color and a shade of it will be generated for the menus backgrounds. Take into account that title text will remain white and content will be black text on white background, so dark or saturated colors will work better.
 
-## Changing the project title for a logo
+## Setting a custom logo
 
-Tintin also gives you the possibility of using your own logo.
-
-To do so use the `logo` setting:
+By default, tintin will show the project name in the frontpage, but it can be replaced by an image setting an absolute URL in the `logo` option:
 
 ```yaml
 color: blue
 logo: https://github.com/theam/tintin/raw/master/assets/logo.svg
 ```
 
-It is recommended that the logo has transparent background.
-
+For the best results, we recommend to use an image with transparent background.

@@ -106,19 +106,16 @@ loadTintinConfig pages ctx = do
     in unquoted
        & Text.stripPrefix "github.com/"
        & fromMaybe unquoted
-
   stripGit txt =
     txt
       & Text.stripPrefix "git://"
       & flatMap (Text.stripSuffix ".git")
       & fromMaybe txt
-
   stripQuotes txt =
     txt
     & Text.stripPrefix "\""
     & flatMap (Text.stripSuffix "\"")
     & fromMaybe txt
-
   errorMessages = unlines
     ["Tintin usually generates a .tintin.yml file with a color configuration. Maybe you don't have enough permissions?"
     , ""
@@ -140,9 +137,9 @@ loadInfo :: ( Has Logging.Capability eff
             )
          => [HtmlFile]
          -> Effectful eff Project.Info
-loadInfo htmlFiles = do
-  let pages = htmlFiles
-              & map (\HtmlFile.HtmlFile {..} -> Project.Page title content filename)
+loadInfo htmlFiles =
   Filesystem.currentDirectory
     >>= loadProjectConfig
     >>= loadTintinConfig pages
+ where
+  pages = htmlFiles & map (\HtmlFile.HtmlFile {..} -> Project.Page title content filename)
