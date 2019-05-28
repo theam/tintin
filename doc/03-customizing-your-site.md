@@ -12,7 +12,7 @@ color: blue
 ```
 
 This is the main tintin configuration file. By default, Tintin will try to pull the basic
-information directly from your `package.yaml` or `*.cabal` configuration file if they're present, 
+information directly from your `package.yaml` or `*.cabal` configuration file if they're present,
 but you can override the settings in your `.tintin.yml` file too:
 
 ```yaml
@@ -22,6 +22,9 @@ github: theam/wonderful-project
 author: Wonder Woman
 color: #AB2D1C
 logo: https://upload.wikimedia.org/wikipedia/en/3/3a/Wonder_Woman_Vol_5_16.png
+titleFont: Poiret One
+titleFontWeight: 400
+bodyFont: PT Sans
 ```
 
 ## Changing the color theme
@@ -95,3 +98,26 @@ logo: https://github.com/theam/tintin/raw/master/assets/logo.svg
 ```
 
 For the best results, we recommend to use an image with transparent background.
+
+## Setting custom Google Fonts
+
+You can override the default tipography for titles and text body. Tintin uses Google Fonts, so you can set any tipography in [the Google Fonts catalog](https://fonts.google.com).
+
+### Title font
+
+To change the title font, set the font name and weight in your `.tintin.yml` file as follows:
+
+```yaml
+titleFont: Poiret One
+titleFontWeight: 400
+```
+
+Notice that **the title font weight setting is required** for Tintin to find the right font files in google servers.
+
+### Body font
+
+To change the body font you can just set the `bodyFont` option with the name of your prefered font. Tintin will use the regular version of the chosen font.
+
+```yaml
+bodyFont: PT Sans
+```

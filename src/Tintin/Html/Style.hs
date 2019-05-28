@@ -9,8 +9,9 @@ require Tintin.Domain.Project
 
 data Style
 
-style :: Project.Color -> Text
-style projectColor = toText . render $ do
+style :: Project.Info -> Text
+style info = toText . render $ do
+  let (themeColorName, themeColorCode) = themeColor $ Project.color info
   html ? do
     height (pct 100)
     minHeight (pct 100)
@@ -18,13 +19,13 @@ style projectColor = toText . render $ do
   body ? do
     height (pct 100)
     minHeight (pct 100)
-    fontFamily ["IBM Plex Sans"] [ sansSerif ]
+    fontFamily [Project.bodyFont info] [sansSerif]
     fontSize (em 1)
     overflowX hidden
 
   forM_ (zip [(0::Double)..] [h1, h2, h3]) $ \(n, x) -> x ? do
-    fontFamily ["Montserrat" ] [ sansSerif ]
-    fontWeight bold
+    fontFamily [Project.titleFont info] [sansSerif]
+    fontWeight $ weight $ Project.titleFontWeight info
     fontSize (em (2.441 Core.** n))
 
   h1 ? fontSize (em 2.441)
@@ -177,8 +178,8 @@ style projectColor = toText . render $ do
   ".sidebar-nav" |> ".sidebar-brand" ? do
     height (rem 3)
     fontSize (rem 2)
-    fontFamily ["Montserrat"] [sansSerif]
-    fontWeight bold
+    fontFamily [Project.titleFont info] [sansSerif]
+    fontWeight $ weight $ Project.titleFontWeight info
     paddingTop (rem 2.5)
     paddingBottom (rem 2.5)
     marginBottom (rem 1.5)
@@ -219,14 +220,12 @@ style projectColor = toText . render $ do
 
   ".tintin-bg-70" ? do
     backgroundColor (rgba 255 255 255 0.15)
+ 
+  (element $ ".tintin-bg-" <> themeColorName) ? do
+    backgroundColor themeColorCode
 
-  forM (colorNames projectColor) $ \(colorName, colorValue) ->
-    (element $ ".tintin-bg-" <> colorName) ? do
-      backgroundColor colorValue
-
-  forM (colorNames projectColor) $ \(colorName, colorValue) ->
-    (element $ ".tintin-fg-" <> colorName) ? do
-      color colorValue
+  (element $ ".tintin-fg-" <> themeColorName) ? do
+    color themeColorCode
 
   ".tintin-fg-active" ? do
     color (rgba 255 255 255 1.0)
@@ -267,26 +266,16 @@ style projectColor = toText . render $ do
       position relative
 
 
--- TODO: This list is used to generate all possible CSS classes for supported colors. 
--- As we now know at compile time what's he right color, we could remove this list and
--- generate the required colors only.
-colorNames :: Project.Color -> [(Text, Color)]
-colorNames (Project.HexColor customColor) =
-  [ ("custom"     , clayColor)
-  ]
-  where clayColor = fromString $ toString customColor
-colorNames _ =
-  [ ("black"      , "#1d1f21")
-  , ("white"      , "#f5f8f6")
-  , ("grey"       , "#4D4D4D")
-  , ("red"        , "#D30228")
-  , ("darkgreen"  , "#3C8B6A")
-  , ("lightgreen" , "#A4CB58")
-  , ("darkorange" , "#FF6602")
-  , ("lightorange", "#FAA73E")
-  , ("blue"       , "#94C1E8")
-  , ("darkblue"   , "#007C99")
-  , ("purple"     , "#9F76B4")
-  , ("bronze"     , "#A4A27A")
-  , ("darkgrey"   , "#282a2e")
-  ]
+themeColor :: Project.Color -> (Text, Color)
+themeColor (Project.HexColor colorCode) = ("custom", fromString $ toString colorCode)
+themeColor Project.Purple               = ("purple" , "#9F76B4")
+themeColor Project.LightGreen           = ("lightgreen" , "#A4CB58")
+themeColor Project.DarkGreen            = ("darkgreen" , "#3C8B6A")
+themeColor Project.Blue                 = ("blue" , "#94C1E8")
+themeColor Project.DarkBlue             = ("darkblue" , "#007C99")
+themeColor Project.Bronze               = ("bronze" , "#A4A27A")
+themeColor Project.DarkOrange           = ("darkorange" , "#FF6602")
+themeColor Project.LightOrange          = ("l ", "#FAA73E")
+themeColor Project.Red                  = ("red" , "#D30228")
+themeColor Project.Grey                 = ("grey" , "#4D4D4D")
+

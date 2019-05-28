@@ -75,30 +75,36 @@ loadTintinConfig :: ( Has Logging.Capability eff
                  => [Project.Page]
                  -> ProjectContext
                  -> Effectful eff Project.Info
-loadTintinConfig pages ctx = do
-  let Filesystem.Path currentPath = projectLocation ctx
+loadTintinConfig pages ProjectContext {..} = do
+  let Filesystem.Path currentPath = projectLocation
       tintinPath = Filesystem.Path $ currentPath <> "/.tintin.yml"
   tintinExists <- Filesystem.doesExist tintinPath
   unless tintinExists $ Filesystem.writeFile tintinPath "color: blue\n"
   tintinConfig <- Filesystem.readFile tintinPath
   let
-    projectName     = (tintinConfig & getFieldValue "name") <|> (name ctx)
-    projectSynopsis = (tintinConfig & getFieldValue "synopsis") <|> (synopsis ctx)
-    projectGithub   = (tintinConfig & getFieldValue "github") <|> (github ctx) <|> (location ctx)
-    projectAuthor   = (tintinConfig & getFieldValue "author") <|> (author ctx)
-    tintinColor     = tintinConfig & getFieldValue "color"
-    tintinLogo      = tintinConfig & getFieldValue "logo"
+    projectName           = (tintinConfig & getFieldValue "name") <|> name
+    projectSynopsis       = (tintinConfig & getFieldValue "synopsis") <|> synopsis
+    projectGithub         = (tintinConfig & getFieldValue "github") <|> github <|> location
+    projectAuthor         = (tintinConfig & getFieldValue "author") <|> author
+    tintinColor           = tintinConfig & getFieldValue "color"
+    tintinLogo            = tintinConfig & getFieldValue "logo"
+    tintinTitleFont       = (tintinConfig & getFieldValue "titleFont") <|> (Just $ fromString "Montserrat")
+    tintinTitleFontWeight = (tintinConfig & getFieldValue "titleFontWeight") <|> (Just "500")
+    tintinBodyFont        = (tintinConfig & getFieldValue "bodyFont") <|> (Just $ fromString "IBM+Plex+Sans")
   when (isNothing projectName) (Errors.showAndDie ["Project must have a name. Please set it in package.yaml or *.cabal."])
   when (isNothing projectSynopsis) (Errors.showAndDie ["Project must have a synopsis. Please set it in package.yaml or *.cabal."])
   when (isNothing tintinColor) (Errors.showAndDie [errorMessages])
   return Project.Info
     { name = Unsafe.fromJust projectName
-    , synopsis = Unsafe.fromJust projectSynopsis
-    , githubLink = parseGithubUrl <$> projectGithub
-    , githubAuthor = projectAuthor
-    , color = makeColor $ Unsafe.fromJust tintinColor
-    , logoUrl = tintinLogo
-    , pages = pages
+    , synopsis        = Unsafe.fromJust projectSynopsis
+    , githubLink      = parseGithubUrl <$> projectGithub
+    , githubAuthor    = projectAuthor
+    , color           = makeColor $ Unsafe.fromJust tintinColor
+    , logoUrl         = tintinLogo
+    , titleFont       = Unsafe.fromJust tintinTitleFont
+    , titleFontWeight = read $ toString $ Unsafe.fromJust tintinTitleFontWeight
+    , bodyFont        = Unsafe.fromJust tintinBodyFont
+    , pages           = pages
     }
  where
   parseGithubUrl txt =
