@@ -2,7 +2,7 @@ name:                tintin
 version:             1.10.0
 github:              "theam/tintin"
 license:             Apache-2.0
-author:              "The Agile Monkeys"
+author:              The Agile Monkeys
 maintainer:          "hackers@theam.io"
 copyright:           "2018 Theam"
 license-file:        LICENSE.md

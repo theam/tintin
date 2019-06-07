@@ -125,7 +125,6 @@ style info = toText . render $ do
         textDecoration none
         fontWeight bold
         color $ shade 0.6 themeColorCode
-        fontSize (em 1.1)
       "a:hover" ? do
         textDecoration none
         color $ shade 0.7 themeColorCode

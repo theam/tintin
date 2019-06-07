@@ -81,13 +81,13 @@ footer info =
     div_ [class_ "container"] $
       div_ [class_ "row"] $ 
         div_ [class_ "col"] $ do
-          when (isJust $ Project.author info) $  
+          when (isJust $ Project.author info) $ do
+            let author = fromJust $ Project.author info
             p_ [class_ "author"] $ do
               "Developed by "
-              b_ [] $
-                a_ [ href_ $ fromJust $ Project.authorWebsite info
-                   , target_ "blank"
-                   ] (toHtml $ fromJust $ Project.author info)
+              case Project.authorWebsite info of
+                Just website -> a_ [ href_ website, target_ "blank" ] (toHtml author)
+                Nothing -> span_ [] $ toHtml author 
           p_ [class_ "site-generated-message"] $ do
             "Site generated with "
             a_ [ href_ "https://theam.github.io/tintin", class_ "tintin-logo" ] $
