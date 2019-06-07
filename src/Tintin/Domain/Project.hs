@@ -32,7 +32,8 @@ data Info = Info
   , synopsis           :: Text
   , color              :: Color
   , githubLink         :: Maybe Text
-  , githubAuthor       :: Maybe Text
+  , author             :: Maybe Text
+  , authorWebsite      :: Maybe Text
   , logoUrl            :: Maybe Text
   , titleFont          :: Text
   , titleFontWeight    :: Integer

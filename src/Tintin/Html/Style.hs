@@ -12,6 +12,7 @@ data Style
 style :: Project.Info -> Text
 style info = toText . render $ do
   let (themeColorName, themeColorCode) = themeColor $ Project.color info
+  
   html ? do
     height (pct 100)
     minHeight (pct 100)
@@ -22,6 +23,11 @@ style info = toText . render $ do
     fontFamily [Project.bodyFont info] [sansSerif]
     fontSize (em 1)
     overflowX hidden
+    
+    "a" ? do
+      color $ shade 0.3 themeColorCode  
+    "a:hover" ? do
+      color $ shade 0.1 themeColorCode
 
   forM_ (zip [(0::Double)..] [h1, h2, h3]) $ \(n, x) -> x ? do
     fontFamily [Project.titleFont info] [sansSerif]
@@ -35,7 +41,7 @@ style info = toText . render $ do
   blockquote ? do
     borderLeft solid (px 4) "#DDD"
     paddingLeft (rem 1)
-    color "#777"
+    color codeTextColor
 
   ".next-prev" ? do
     marginTop (pct 5)
@@ -51,7 +57,7 @@ style info = toText . render $ do
     marginBottom (rem 1.563)
 
   ".cover-container" ? do
-   backgroundColor (rgba 255 255 255 0.0)
+   backgroundColor themeColorCode
 
   ".watermark" ? do
     position absolute
@@ -64,6 +70,7 @@ style info = toText . render $ do
   ".cover-heading-subtitle" ? do
     marginTop (rem 3)
     fontSize (rem 1.953)
+    color $ contrastingColorFor themeColorCode
 
   ".vertical-auto" ? do
     marginTop auto
@@ -117,18 +124,13 @@ style info = toText . render $ do
         display block
         textDecoration none
         fontWeight bold
-      ".tintin-fg-disabled" ? do
-        ":hover" & do
-           "mix-blend-mode" -: "normal"
-           Clay.filter $ invert (pct 0)
-           textDecoration none
-           color black
+        color $ shade 0.6 themeColorCode
+        fontSize (em 1.1)
+      "a:hover" ? do
+        textDecoration none
+        color $ shade 0.7 themeColorCode
       ".tintin-fg-active" ? do
-        ":hover" & do
-           "mix-blend-mode" -: "normal"
-           Clay.filter $ invert (pct 0)
-           textDecoration none
-           color white
+        color white
 
   "#menu-toggle" ? do
     position absolute
@@ -144,8 +146,6 @@ style info = toText . render $ do
       marginLeft (rem 1)
       marginTop (rem 0)
       width (rem 1.5)
-      img ? do
-        Clay.filter (invert $ pct 70)
 
   ".filter-gray" ? do
     position relative
@@ -153,20 +153,18 @@ style info = toText . render $ do
     marginLeft (rem 0.25)
     marginRight (rem 1)
     height (rem 1)
-    Clay.filter (brightness 0.75)
 
   ".footer-theam" ? do
     position relative
     bottom (px $ 1)
     marginLeft (rem $ -0.25)
     height (rem 1.75)
-    Clay.filter (invert (pct 75))
 
   ".tintin-doc-footer" ? do
     bottom (px 0)
     height (rem $ -15)
     width (pct 100)
-    color (rgba 0 0 0 0.30)
+    color footerTextColor
 
   ".main-container" ? do
     minHeight (pct 100)
@@ -188,7 +186,7 @@ style info = toText . render $ do
 
   ".tintin-navbar" ? do
     fontWeight bold
-    backgroundColor (rgba 255 255 255 0.15)
+    backgroundColor $ shade 0.2 themeColorCode
     ".left-part" ? do
       important $ paddingLeft (px 0)
     ul ? do
@@ -198,28 +196,20 @@ style info = toText . render $ do
         marginRight (rem 1)
         display inline
         a ? do
-          color black
-          Clay.filter $ invert (pct 35)
-          "mix-blend-mode" -: "difference"
+          color $ shade 0.6 themeColorCode
         "a:hover" ? do
-          "mix-blend-mode" -: "normal"
-          Clay.filter $ invert (pct 0)
           textDecoration none
-          color black
+          color $ shade 0.7 themeColorCode
 
     ".tintin-navbar-active" ? do
       a ? do
-        "mix-blend-mode" -: "normal"
-        Clay.filter $ invert (pct 0)
-        color white
+        color $ contrastingColorFor themeColorCode
       "a:hover" ? do
-        "mix-blend-mode" -: "normal"
-        Clay.filter $ invert (pct 0)
         textDecoration none
-        color white
+        color . shade 0.2 $ contrastingColorFor themeColorCode
 
   ".tintin-bg-70" ? do
-    backgroundColor (rgba 255 255 255 0.15)
+    backgroundColor $ shade 0.2 themeColorCode
  
   (element $ ".tintin-bg-" <> themeColorName) ? do
     backgroundColor themeColorCode
@@ -228,13 +218,11 @@ style info = toText . render $ do
     color themeColorCode
 
   ".tintin-fg-active" ? do
-    color (rgba 255 255 255 1.0)
+    color white
 
 
   ".tintin-fg-disabled" ? do
     color black
-    Clay.filter $ invert (pct 35)
-    "mix-blend-mode" -: "difference"
 
   footer ? do
     position relative
@@ -243,6 +231,24 @@ style info = toText . render $ do
     width (pct 100)
     paddingTop (px 30)
     paddingBottom (px 30)
+    color $ contrastingColorFor themeColorCode
+    backgroundColor $ shade 0.2 themeColorCode
+    textAlign center
+    
+    a ? do
+      color $ shade 0.6 themeColorCode
+    "a:hover" ? do
+      textDecoration none
+      color $ shade 0.7 themeColorCode
+      
+    ".author" ? do
+      marginTop (em 1.2)
+      fontSize (em 1.2)
+      
+    ".site-generated-message" ? do
+      fontSize (em 0.8)
+      marginTop (em 3)
+      marginBottom (em 3)
 
   ".container" ? do
     maxWidth (rem 50)
@@ -267,15 +273,46 @@ style info = toText . render $ do
 
 
 themeColor :: Project.Color -> (Text, Color)
-themeColor (Project.HexColor colorCode) = ("custom", fromString $ toString colorCode)
-themeColor Project.Purple               = ("purple" , "#9F76B4")
+themeColor (Project.HexColor colorCode) = ("custom"     , fromString $ toString colorCode)
+themeColor Project.Purple               = ("purple"     , "#9F76B4")
 themeColor Project.LightGreen           = ("lightgreen" , "#A4CB58")
-themeColor Project.DarkGreen            = ("darkgreen" , "#3C8B6A")
-themeColor Project.Blue                 = ("blue" , "#94C1E8")
-themeColor Project.DarkBlue             = ("darkblue" , "#007C99")
-themeColor Project.Bronze               = ("bronze" , "#A4A27A")
+themeColor Project.DarkGreen            = ("darkgreen"  , "#3C8B6A")
+themeColor Project.Blue                 = ("blue"       , "#94C1E8")
+themeColor Project.DarkBlue             = ("darkblue"   , "#007C99")
+themeColor Project.Bronze               = ("bronze"     , "#A4A27A")
 themeColor Project.DarkOrange           = ("darkorange" , "#FF6602")
-themeColor Project.LightOrange          = ("l ", "#FAA73E")
-themeColor Project.Red                  = ("red" , "#D30228")
-themeColor Project.Grey                 = ("grey" , "#4D4D4D")
+themeColor Project.LightOrange          = ("lightorange", "#FAA73E")
+themeColor Project.Red                  = ("red"        , "#D30228")
+themeColor Project.Grey                 = ("grey"       , "#4D4D4D")
 
+codeTextColor :: Color
+codeTextColor = "#777"
+
+blackish :: Color -- This is the default dark grey color from Boostrap
+blackish = "#212529"
+
+footerTextColor :: Color
+footerTextColor = rgba 0 0 0 0.30
+
+contrastingColorFor :: Color -> Color
+contrastingColorFor color = 
+  case soulFor color of
+    Light    -> blackish
+    Darkness -> white
+    
+shade :: Float -> Color -> Color
+shade percent color = 
+  case soulFor color of
+    Light    -> Clay.darken percent color
+    Darkness -> Clay.lighten percent color
+
+data Soul = Darkness | Light
+
+soulFor :: Color -> Soul
+soulFor (Clay.Rgba red green blue _) =
+  if ((fromIntegral (red + green + blue) / 3) > midTone)
+  then Light
+  else Darkness
+ where
+  midTone = 128.0
+soulFor c = soulFor $ Clay.toRgba c
