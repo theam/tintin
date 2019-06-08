@@ -20,6 +20,7 @@ name: Wonderful project
 synopsis: This is a project that does wonderful things
 github: theam/wonderful-project
 author: Wonder Woman
+authorWebsite: https://en.wikipedia.org/wiki/Wonder_Woman
 color: #AB2D1C
 logo: https://upload.wikimedia.org/wikipedia/en/3/3a/Wonder_Woman_Vol_5_16.png
 titleFont: Poiret One
@@ -120,4 +121,19 @@ To change the body font you can just set the `bodyFont` option with the name of 
 
 ```yaml
 bodyFont: PT Sans
+```
+
+### Author and Author Website
+
+You can optionally add an `author` name and `authorWebsite` options in `.tintin.yml`. This two fields will be rendered on the footer of the generated site as a link as follows:
+
+With options:
+```yaml
+author: Wonder Woman
+authorWebsite: https://en.wikipedia.org/wiki/Wonder_Woman
+```
+
+Will render:
+```html
+Developed by <a href="https://en.wikipedia.org/wiki/Wonder_Woman" target="_blank">Wonder Woman</a>
 ```

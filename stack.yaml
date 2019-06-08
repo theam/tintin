@@ -36,7 +36,6 @@ resolver: lts-13.3
 # non-dependency (i.e. a user package), and its test suites and benchmarks
 # will not be run. This is useful for tweaking upstream packages.
 packages:
-- location: .
 
 extra-deps:
   - require-0.4.2

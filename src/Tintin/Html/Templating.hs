@@ -60,7 +60,7 @@ wrapPage info context page = toText . renderText $ do
                     toHtmlRaw $ Project.content page
         div_ [class_ "tintin-doc-footer clear-fix"] $ do
           nextPrev context
-          siteGenerated
+          footer info
       tintinPostInit
 
 nextPrev :: Project.Context -> Html ()
@@ -75,16 +75,26 @@ nextPrev context = do
         a_ [href_ $ Project.refFilename next] $  do
           ( toHtml $ "Next: " <> Project.refTitle next <> " >")
 
-siteGenerated = do
-  div_ [class_ "float-right"] $ do
-    div_ [class_ "d-inline", style_ "float: left"] $ do
-      p_ [class_ ""] "Site generated with "
-    a_ [ style_ "float: left", href_ "https://theam.github.io/tintin"] $ do
-      img_ [ class_ "filter-gray", src_ $ asset "logo.svg" ]
-    div_ [class_ "clear-fix float-right"] $ do
-      span_ [style_ "float:left"] $ toHtmlRaw ("&mdash; &copy; 2018 " :: Text)
-      a_ [class_ "float:left", href_ "http://theam.io"] $
-        img_ [class_ "footer-theam", src_ "http://theam.io/logo_theam.png"]
+footer :: Project.Info -> Html ()
+footer info =
+  footer_ [] $
+    div_ [class_ "container"] $
+      div_ [class_ "row"] $ 
+        div_ [class_ "col"] $ do
+          when (isJust $ Project.author info) $ do
+            let author = fromJust $ Project.author info
+            p_ [class_ "author"] $ do
+              "Developed by "
+              case Project.authorWebsite info of
+                Just website -> a_ [ href_ website, target_ "blank" ] (toHtml author)
+                Nothing -> span_ [] $ toHtml author 
+          p_ [class_ "site-generated-message"] $ do
+            "Site generated with "
+            a_ [ href_ "https://theam.github.io/tintin", class_ "tintin-logo" ] $
+              img_ [ class_ "filter-gray", src_ $ asset "logo.svg" ]
+            span_ [] $ toHtmlRaw ("&mdash; &copy; 2019 " :: Text)
+            a_ [ href_ "https://www.theagilemonkeys.com"] "The Agile Monkeys"
+
 
 wrapHome :: Project.Info -> Maybe Project.PageRef -> Project.Page -> Text
 wrapHome info nextRef page = toText . renderText $ do
@@ -114,7 +124,7 @@ wrapHome info nextRef page = toText . renderText $ do
             div_ [] $ do
               toHtmlRaw $ Project.content page
       nextPrev (Project.Context Nothing nextRef)
-      footer
+      footer info
       tintinPostInit
  where
   navbar =
@@ -134,20 +144,6 @@ wrapHome info nextRef page = toText . renderText $ do
             ul_ [class_ ""] $
               li_ [class_ ""] $
                 a_ [class_ "", href_ $ "https://github.com/" <> ghlink] "View on GitHub"
-
-  footer =
-    footer_ [ class_ "tintin-bg-darkgrey tintin-fg-white"] $
-      div_ [class_ "container"] $
-        div_ [class_ "row"] $ do
-          div_ [class_ "col"] $
-            p_ [class_ "tintin-fg-lightgrey"] $
-              when (isJust $ Project.githubLink info) $ do
-              "Developed by "
-              a_ [ href_ $ "https://github.com/" <> (fromJust $ Project.githubAuthor info)
-                 , class_ $ "tintin-fg-" <> bgColorNameOf info
-                 ] (toHtml $ fromJust $ Project.githubAuthor info)
-          div_ [class_ "col", style_ ""] $ do
-            siteGenerated
 
 
 tintinHeader :: Project.Info -> Project.Page -> Html ()
@@ -170,7 +166,7 @@ tintinHeader info@Project.Info {..} Project.Page {..} =
     meta_ [ name_ "twitter:description"
           , content_ synopsis
           ]
-    whenJust githubAuthor $ \author ->
+    whenJust author $ \author ->
       meta_ [ name_ "twitter:creator"
             , content_ author
             ]
