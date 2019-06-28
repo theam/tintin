@@ -50,10 +50,13 @@ style info = toText . render $ do
   "#header-container" ? do
     marginTop (rem 5)
     marginBottom (rem 5)
+    textAlign center
+
+    "img" ? do
+      maxHeight (rem 7)
 
   ".cover-heading" ? do
     fontSize (pct 800)
-    maxHeight (rem 6)
     marginBottom (rem 1.563)
 
   ".cover-container" ? do
