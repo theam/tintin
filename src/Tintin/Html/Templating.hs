@@ -136,7 +136,9 @@ wrapHome info nextRef page = toText . renderText $ do
           ul_ [class_ "left-part"] $ do
             li_ [class_ "tintin-navbar-active"] $
               a_ [class_ "", href_ "index.html"] "Home"
-            let (page:_) = filter (\x -> "index.html" /= Project.filename x ) (Project.pages info)
+            let page = case filter (\x -> "index.html" /= Project.filename x ) (Project.pages info) of
+                  p:_ -> p
+                  []  -> error "At least two documentation pages required: index.md, and one other file."
             li_ [class_ ""] $
               a_ [class_ "", href_ (Project.filename page)] "Docs"
         whenJust (Project.githubLink info) $ \ghlink ->
