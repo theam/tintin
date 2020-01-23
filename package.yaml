@@ -1,44 +1,44 @@
-name:                tintin
-version:             1.10.0
-github:              "theam/tintin"
-license:             Apache-2.0
-author:              The Agile Monkeys
-maintainer:          "hackers@theam.io"
-copyright:           "2018 Theam"
-license-file:        LICENSE.md
+name: tintin
+version: 1.10.1
+github: "theam/tintin"
+license: Apache-2.0
+author: The Agile Monkeys
+maintainer: "hackers@theam.io"
+copyright: "2020 Theam"
+license-file: LICENSE.md
 
 extra-source-files:
-- README.md
-- ChangeLog.md
-- Requires
+  - README.md
+  - ChangeLog.md
+  - Requires
 
 # Metadata used when publishing your package
-synopsis:            A softer alternative to Haddock
-category:            Documentation
+synopsis: A softer alternative to Haddock
+category: Documentation
 
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description:         Please see the website <https://theam.github.io/tintin>
+description: Please see the website <https://theam.github.io/tintin>
 
 ghc-options:
   - -F
   - -pgmF requirepp
 
 default-extensions:
-- DeriveGeneric
-- RecordWildCards
-- OverloadedStrings
-- DataKinds
-- TypeOperators
-- NoImplicitPrelude
-- StandaloneDeriving
-- TypeApplications
-- KindSignatures
-- FlexibleContexts
-- FlexibleInstances
-- MultiParamTypeClasses
-- TypeFamilies
+  - DeriveGeneric
+  - RecordWildCards
+  - OverloadedStrings
+  - DataKinds
+  - TypeOperators
+  - NoImplicitPrelude
+  - StandaloneDeriving
+  - TypeApplications
+  - KindSignatures
+  - FlexibleContexts
+  - FlexibleInstances
+  - MultiParamTypeClasses
+  - TypeFamilies
 
 dependencies:
   - base >= 4.7 && < 5
@@ -47,46 +47,44 @@ dependencies:
 library:
   source-dirs: src
   dependencies:
-  - text
-  - directory
-  - temporary
-  - process
-  - inflections
-  - inliterate
-  - universum
-  - lucid
-  - yaml
-  - clay
-  - data-has
-  - frontmatter
-  - containers
+    - text
+    - directory
+    - temporary
+    - process
+    - inflections
+    - inliterate
+    - universum
+    - lucid
+    - yaml
+    - clay
+    - data-has
+    - frontmatter
+    - containers
   verbatim:
     build-tool-depends: require:requirepp
 
-
-
 executables:
   tintin:
-    main:                Main.hs
-    source-dirs:         app
+    main: Main.hs
+    source-dirs: app
     ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
     dependencies:
-    - tintin
-    - universum
-    - optparse-generic
+      - tintin
+      - universum
+      - optparse-generic
     verbatim:
       build-tool-depends: require:requirepp
 
 tests:
   tintin-test:
-    main:                Spec.hs
-    source-dirs:         test
+    main: Spec.hs
+    source-dirs: test
     ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
     dependencies:
-    - tintin
+      - tintin

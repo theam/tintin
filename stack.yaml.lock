@@ -13,7 +13,7 @@ packages:
     hackage: require-0.4.2
 snapshots:
 - completed:
-    size: 494116
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/13/3.yaml
-    sha256: d9b0ca796c677a8fd429009d09afc6c9efe260b8789c264ce11641e3e727466f
-  original: lts-13.3
+    size: 524162
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/14/21.yaml
+    sha256: 9a55dd75853718f2bbbe951872b36a3b7802fcd71796e0f25b8664f24e34c666
+  original: lts-14.21

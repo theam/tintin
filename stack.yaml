@@ -15,7 +15,7 @@
 # resolver:
 #  name: custom-snapshot
 #  location: "./custom-snapshot.yaml"
-resolver: lts-13.3
+resolver: lts-14.21
 
 # User packages to be built.
 # Various formats can be used as shown in the example below.
@@ -39,7 +39,6 @@ packages:
 
 extra-deps:
   - require-0.4.2
-
 # Override default flag values for local packages and extra-deps
 # flags: {}
 
