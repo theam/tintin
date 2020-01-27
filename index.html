@@ -1,0 +1,515 @@
+<!DOCTYPE HTML><html><head><title>tintin - Home</title><meta charset="utf-8"><meta content="summary" name="twitter:card"><meta content="https://s3-eu-west-1.amazonaws.com/worldwideapps/assets/tintin-blue.png" name="twitter:site"><meta content="tintin - Home" name="twitter:title"><meta content="A softer alternative to Haddock" name="twitter:description"><meta content="The Agile Monkeys" name="twitter:creator"><meta content="https://s3-eu-west-1.amazonaws.com/worldwideapps/assets/tintin-blue.png" name="twitter:image"><meta itemprop="og:type" content="website"><meta itemprop="og:site_name" content="theam"><meta itemprop="og:title" content="tintin - Home"><meta itemprop="og:url" content="theam/tintin"><meta itemprop="og:image" content="https://s3-eu-west-1.amazonaws.com/worldwideapps/assets/tintin-blue.png"><meta itemprop="og:description" content="A softer alternative to Haddock"><link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans|Montserrat:500" rel="stylesheet"><link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet"><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow-night.min.css" rel="stylesheet"><link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" rel="stylesheet"><link href="https://s3-eu-west-1.amazonaws.com/worldwideapps/assets/favicon-blue.ico" rel="shortcut icon"><link href="https://cdn.jsdelivr.net/npm/katex@0.10.0-alpha/dist/katex.min.css" rel="stylesheet"><style>
+html
+{
+  height     : 100%;
+  min-height : 100%;
+}
+
+body
+{
+  height      : 100%;
+  min-height  : 100%;
+  font-family : "IBM+Plex+Sans", sans-serif;
+  font-size   : 1em;
+  overflow-x  : hidden;
+}
+
+body a
+{
+  color : rgba(104,136,163,77.0);
+}
+
+body a:hover
+{
+  color : rgba(134,174,209,26.0);
+}
+
+h1
+{
+  font-family : "Montserrat", sans-serif;
+  font-weight : 500;
+  font-size   : 1em;
+}
+
+h2
+{
+  font-family : "Montserrat", sans-serif;
+  font-weight : 500;
+  font-size   : 2.44099em;
+}
+
+h3
+{
+  font-family : "Montserrat", sans-serif;
+  font-weight : 500;
+  font-size   : 5.95848em;
+}
+
+h1
+{
+  font-size : 2.44099em;
+}
+
+h2
+{
+  font-size : 1.953em;
+}
+
+h3
+{
+  font-size : 1.56299em;
+}
+
+blockquote
+{
+  border-left  : solid 4px #dddddd;
+  padding-left : 1rem;
+  color        : #777777;
+}
+
+.next-prev
+{
+  margin-top    : 5%;
+  margin-bottom : 5%;
+}
+
+#header-container
+{
+  margin-top    : 5rem;
+  margin-bottom : 5rem;
+  text-align    : center;
+}
+
+#header-container img
+{
+  max-height : 7rem;
+}
+
+.cover-heading
+{
+  font-size     : 800%;
+  margin-bottom : 1.56299rem;
+}
+
+.cover-container
+{
+  background-color : #94c1e8;
+}
+
+.watermark
+{
+  position    : absolute;
+  top         : 0px;
+  left        : 0px;
+  max-height  : 1.25039rem;
+  margin-top  : 1.25039rem;
+  margin-left : 1.25039rem;
+}
+
+.cover-heading-subtitle
+{
+  margin-top : 3rem;
+  font-size  : 1.953rem;
+  color      : #212529;
+}
+
+.vertical-auto
+{
+  margin-top    : auto;
+  margin-bottom : auto;
+}
+
+.content
+{
+  margin-top    : 5%;
+  margin-bottom : 5%;
+}
+
+#wrapper
+{
+  padding-left       : 0px;
+  -webkit-transition : all 0.5s ease 0.0s;
+  -moz-transition    : all 0.5s ease 0.0s;
+  -ms-transition     : all 0.5s ease 0.0s;
+  -o-transition      : all 0.5s ease 0.0s;
+  transition         : all 0.5s ease 0.0s;
+}
+
+#wrapper.toggled
+{
+  padding-left : 250px;
+}
+
+#wrapper.toggled #sidebar-wrapper
+{
+  width : 250px;
+}
+
+#page-content-wrapper#wrapper.toggled
+{
+  position     : absolute;
+  margin-right : -250px;
+}
+
+#page-content-wrapper
+{
+  width      : 100%;
+  position   : absolute;
+  margin-top : 3rem;
+  padding    : 15px 15px 15px 15px;
+}
+
+#page-content-wrapper img
+{
+  max-width : 100%;
+}
+
+#sidebar-wrapper
+{
+  z-index            : 1000;
+  position           : fixed;
+  left               : 250px;
+  width              : 0px;
+  margin-left        : -250px;
+  overflow-y         : hidden;
+  overflow-x         : hidden;
+  -webkit-transition : all 0.5s ease 0.0s;
+  -moz-transition    : all 0.5s ease 0.0s;
+  -ms-transition     : all 0.5s ease 0.0s;
+  -o-transition      : all 0.5s ease 0.0s;
+  transition         : all 0.5s ease 0.0s;
+}
+
+.sidebar-nav
+{
+  position        : absolute;
+  top             : 0px;
+  width           : 250px;
+  margin          : 0px 0px 0px 0px;
+  padding         : 0px 0px 0px 0px;
+  list-style-type : none;
+}
+
+.sidebar-nav li
+{
+  text-indent : 20px;
+  line-height : 40px;
+}
+
+.sidebar-nav li a
+{
+  display         : block;
+  text-decoration : none;
+  font-weight     : bold;
+  color           : rgba(60,78,93,153.0);
+}
+
+.sidebar-nav li a:hover
+{
+  text-decoration : none;
+  color           : rgba(45,58,70,178.0);
+}
+
+.sidebar-nav li .tintin-fg-active
+{
+  color : #ffffff;
+}
+
+#menu-toggle
+{
+  position : absolute;
+}
+
+#menu-toggle img
+{
+  position : absolute;
+  left     : 0px;
+}
+
+#menu-toggle .rotateIn
+{
+  z-index : 999;
+}
+
+.tintin-doc-topbar
+{
+  height : 3rem;
+}
+
+.tintin-doc-topbar a
+{
+  margin-left : 1rem;
+  margin-top  : 0rem;
+  width       : 1.5rem;
+}
+
+.filter-gray
+{
+  position     : relative;
+  bottom       : 3px;
+  margin-left  : 0.25rem;
+  margin-right : 1rem;
+  height       : 1rem;
+}
+
+.footer-theam
+{
+  position    : relative;
+  bottom      : 1px;
+  margin-left : -0.25rem;
+  height      : 1.75rem;
+}
+
+.tintin-doc-footer
+{
+  bottom : 0px;
+  height : -15rem;
+  width  : 100%;
+  color  : rgba(0,0,0,0.3);
+}
+
+.main-container
+{
+  min-height : 100%;
+  position   : relative;
+}
+
+#content
+{
+  min-height : 95%;
+}
+
+.sidebar-nav > .sidebar-brand
+{
+  height         : 3rem;
+  font-size      : 2rem;
+  font-family    : "Montserrat", sans-serif;
+  font-weight    : 500;
+  padding-top    : 2.5rem;
+  padding-bottom : 2.5rem;
+  margin-bottom  : 1.5rem;
+}
+
+.sidebar-nav > .sidebar-brand img
+{
+  height : 1.5rem;
+}
+
+.tintin-navbar
+{
+  font-weight      : bold;
+  background-color : rgba(119,155,186,51.0);
+}
+
+.tintin-navbar .left-part
+{
+  padding-left : 0px !important;
+}
+
+.tintin-navbar ul
+{
+  margin-top      : 1rem;
+  list-style-type : none;
+}
+
+.tintin-navbar ul li
+{
+  margin-right : 1rem;
+  display      : inline;
+}
+
+.tintin-navbar ul li a
+{
+  color : rgba(60,78,93,153.0);
+}
+
+.tintin-navbar ul li a:hover
+{
+  text-decoration : none;
+  color           : rgba(45,58,70,178.0);
+}
+
+
+.tintin-navbar .tintin-navbar-active a
+{
+  color : #212529;
+}
+
+.tintin-navbar .tintin-navbar-active a:hover
+{
+  text-decoration : none;
+  color           : rgba(77,80,83,51.0);
+}
+
+.tintin-bg-70
+{
+  background-color : rgba(119,155,186,51.0);
+}
+
+.tintin-bg-blue
+{
+  background-color : #94c1e8;
+}
+
+.tintin-fg-blue
+{
+  color : #94c1e8;
+}
+
+.tintin-fg-active
+{
+  color : #ffffff;
+}
+
+.tintin-fg-disabled
+{
+  color : #000000;
+}
+
+footer
+{
+  position         : relative;
+  bottom           : 0px;
+  left             : 0px;
+  width            : 100%;
+  padding-top      : 30px;
+  padding-bottom   : 30px;
+  color            : #212529;
+  background-color : rgba(119,155,186,51.0);
+  text-align       : center;
+}
+
+footer a
+{
+  color : rgba(60,78,93,153.0);
+}
+
+footer a:hover
+{
+  text-decoration : none;
+  color           : rgba(45,58,70,178.0);
+}
+
+footer .author
+{
+  margin-top : 1.19999em;
+  font-size  : 1.19999em;
+}
+
+footer .site-generated-message
+{
+  font-size     : 0.8em;
+  margin-top    : 3em;
+  margin-bottom : 3em;
+}
+
+.container
+{
+  max-width : 50rem;
+}
+
+@media screen and (min-width: 768px)
+{
+
+#wrapper
+{
+  padding-left : 0px;
+}
+
+#wrapper .toggled
+{
+  padding-left : 250px;
+}
+
+#wrapper .toggled #sidebar-wrapper
+{
+  width : 250px;
+}
+
+#wrapper .toggled #page-content-wrapper
+{
+  position     : relative;
+  margin-right : 0px;
+}
+
+#sidebar-wrapper
+{
+  width : 0px;
+}
+
+#page-content-wrapper
+{
+  padding  : 20px 20px 20px 20px;
+  position : relative;
+}
+
+}
+
+/* Generated with Clay, http://fvisser.nl/clay */</style></head><body class="tintin-fg-black tintin-bg-white"><div class="tintin-navigation tintin-bg-blue"><div class="cover-container d-flex p-3 mx-auto flex-column tintin-fg-white"><main role="main" class="masthead mb-auto"><div class="container"><div class="row align-items-center"><div id="header-container" class="col"><img src="https://s3-eu-west-1.amazonaws.com/worldwideapps/assets/logo.svg" class="cover-heading"><p class="cover-heading-subtitle">A softer alternative to Haddock</p></div></div></div></main></div><nav style="width: 100%;" class="tintin-navbar"><div class="container d-flex align-items-center"><div class="mr-auto"><ul class="left-part"><li class="tintin-navbar-active"><a href="index.html" class>Home</a></li><li class><a href="01-getting-started.html" class>Docs</a></li></ul></div><div class><ul class><li class><a href="https://github.com/theam/tintin" class>View on GitHub</a></li></ul></div></div></nav></div><section id="content" class="animated fadeIn"><div class="container"><div class="content"><div><h1>Let&#39;s teach about our passion</h1>
+<hr />
+<pre class="text"><code>I&#39;m building books.
+
+But, by teaching, I&#39;m also building
+a community.
+
+Teaching is building.
+
+    - Julie Moronuki, co-author of Haskell Programming from first principles
+</code></pre>
+<hr />
+<p>One day, all Haskell programmers outgrow tutorials. Haddock is more than enough, right?</p>
+<p>Haskell is awesome enough to have some very expressive types that tell you how to
+work your way through the library that you&#39;re using.</p>
+<p>But Haddock is API documentation, which is a kind of <strong>hard documentation</strong>.
+<em>(Hard as in granite)</em></p>
+<p>Let&#39;s face it, there are <strong>a lot</strong> of people out there trying to reach that point.
+People like to get things done, and to do so, they have to use awesome <strong>libraries like yours.</strong>
+And to do so, they consume lots of tutorials and guides, which are a kind of
+<strong>soft documentation</strong>.</p>
+<p>Also, not everyone has the <strong>time</strong> of maintaining a super great library and also a website
+for hosting the documentation. Some users would like to do so, but also, why creating a
+site from scratch for your package, when they can do so <strong>in their own blog</strong>?</p>
+<h2>Tintin handles all of that</h2>
+<p><strong>Tintin</strong> is a utility to create a <strong>soft documentation</strong> website for your Haskell project.
+All documentation blocks are compiled through GHC to ensure that there are no compilation errors.</p>
+<p>Forget about creating a website, just write your tutorials using <strong>markdown</strong>. Host them on
+Github pages.</p>
+<p>And it&#39;s a piece of cake:</p>
+<hr />
+<ul>
+<li><strong>1.</strong> Put your documentation into the <code>doc</code> folder</li>
+<li><strong>2.</strong> Install the <code>tintin</code> dependencies</li>
+<li><strong>3.</strong> Execute <code>tintin run</code></li>
+</ul>
+<hr />
+<h2>Code correctness</h2>
+<p>Tintin runs the GHC Haskell compiler over all of your documentation files, ensuring that everything is
+correct.</p>
+<p>Each one of your code blocks is typechecked and compiled, meaning that your documentation won&#39;t get outdated,
+as it depends on your code:</p>
+<pre class="haskell"><code>{-# LANGUAGE OverloadedStrings #-}
+import Data.Text as Text
+
+protocol :: Text -&gt; Text
+protocol = Text.takeWhile (/= &#39;:&#39;)
+</code></pre>
+<h2>Inline examples</h2>
+<p>You can also evaluate code in your documentation, meaning that your users will know what to expect from
+your examples:</p>
+<pre class="haskell"><code>protocol "https://github.com/theam/tintin" => 
+https
+</code></pre>
+<h2>Credits</h2>
+<p>Special thanks to <a href="https://www.47deg.com/">47deg</a> for developing <a href="https://47deg.github.io/sbt-microsites/">sbt-microsites</a>,
+it served as great inspiration for this project.</p>
+<p>Technologies used throughout this project:</p>
+<ul>
+<li><a href="https://github.com/diffusionkinetics/open/tree/master/inliterate">Inliterate</a>, the package that compiles and renders the websites.</li>
+<li><a href="http://fvisser.nl/clay/">Clay</a>, a CSS preprocessor embedded in Haskell.</li>
+<li><a href="https://github.com/chrisdone/lucid">Lucid</a>, an HTML preprocessor embedded in Haskell.</li>
+<li><a href="https://github.com/serokell/universum">Universum</a>, the prelude used in this project.</li>
+<li><a href="https://github.com/snoyberg/yaml/">Yaml</a>, the Yaml deserialization library</li>
+<li><a href="https://getbootstrap.com/docs/4.0/">Bootstrap 4</a>, CSS framework</li>
+<li><a href="https://jquery.com/">jQuery</a></li>
+</ul>
+</div></div></div></section><div class="row next-prev"><div class="col-md-4 ml-auto"><a href="01-getting-started.html">Next: Getting Started &gt;</a></div></div><footer><div class="container"><div class="row"><div class="col"><p class="author">Developed by <a href="https://www.theagilemonkeys.com" target="blank">The Agile Monkeys</a></p><p class="site-generated-message">Site generated with <a href="https://theam.github.io/tintin" class="tintin-logo"><img src="https://s3-eu-west-1.amazonaws.com/worldwideapps/assets/logo.svg" class="filter-gray"></a><span>&mdash; &copy; 2019 </span><a href="https://www.theagilemonkeys.com">The Agile Monkeys</a></p></div></div></div></footer><script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/haskell.min.js"></script><script src="https://cdn.rawgit.com/icons8/bower-webicon/v0.10.7/jquery-webicon.min.js"></script><script>hljs.initHighlightingOnLoad()</script><script>$(function () {$("#menu-toggle").click(function(e) {e.preventDefault();$("#wrapper").toggleClass("toggled");$("#menu-toggle img").toggleClass("rotateIn rotateOut");})});</script><script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-alpha/dist/katex.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/contrib/auto-render.min.js"></script><script>renderMathInElement(document.body);</script></body></html>
